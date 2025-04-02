@@ -9,8 +9,11 @@ use ApiPlatform\Metadata\ApiResource;
 use ApiPlatform\Metadata;
 use App\State\User\UserProvider;
 use App\State\User\UserItemProvider;
+use App\State\User\UserProcessor;
 use App\Dto\User\UserListDto;
 use App\Dto\User\UserDetailDto;
+use App\Dto\User\UserCreateDto;
+use App\Dto\User\UserUpdateDto;
 
 #[ApiResource(
     operations: [
@@ -22,6 +25,17 @@ use App\Dto\User\UserDetailDto;
             output: UserDetailDto::class,
             provider: UserItemProvider::class
         ),
+        new Metadata\Post(
+            input: UserCreateDto::class,
+            output: UserDetailDto::class,
+            processor: UserProcessor::class,
+        ),
+        new Metadata\Put(
+            input: UserUpdateDto::class,
+            output: UserDetailDto::class,
+            processor: UserProcessor::class,
+        ),
+        new Metadata\Delete()
     ]
 )]
 #[ORM\Entity(repositoryClass: UserRepository::class)]
