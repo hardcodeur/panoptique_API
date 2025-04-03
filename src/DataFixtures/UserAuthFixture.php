@@ -21,15 +21,17 @@ class UserAuthFixture extends Fixture
             $user->setFirstName($faker->firstName());
             $user->setLastName($faker->lastName());
 
-            $authUser = new AuthUser();
-            $authUser->setEmail($faker->email());
-            $authUser->setPassword("root");
-            $authUser->setRoles($roles[array_rand($roles)]);
-            
-            $user->setAuthUser($authUser);
+            if($i%2 == 1){
+                $authUser = new AuthUser();
+                $authUser->setEmail($faker->email());
+                $authUser->setPassword("Root_123");
+                $authUser->setRoles($roles[array_rand($roles)]);
+                
+                $user->setAuthUser($authUser);
+                $manager->persist($authUser);
+            }
 
             $manager->persist($user);
-            $manager->persist($authUser);
         }
         
         $manager->flush();

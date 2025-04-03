@@ -20,7 +20,7 @@ class UserListDto
         
         private ?string $email = null,
         
-        private ?string $roleName = null
+        private ?array $role = null
     ) {
     }
 
@@ -49,8 +49,8 @@ class UserListDto
         return $this->email;
     }
     
-    public function getRoleName(): ?string
+    public function getRole(): ?array
     {
-        return $this->roleName;
+        return $this->role;
     }
 }

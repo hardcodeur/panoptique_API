@@ -37,14 +37,6 @@ class AuthUser
         "agent"=>"ROLE_USER"
     ];
 
-    private const ROLE_HIERARCHY = [
-        'admin' => [self::ROLE["admin"], self::ROLE["manager"], self::ROLE["team_manager"], self::ROLE["agent"]],
-        'manager' => [self::ROLE["manager"], self::ROLE["team_manager"], self::ROLE["agent"]],
-        'team_manager' => [self::ROLE["team_manager"], self::ROLE["agent"]],
-        'agent' => [self::ROLE["agent"]]
-    ];
-
-
     public function getId(): ?int
     {
         return $this->id;
@@ -93,10 +85,13 @@ class AuthUser
 
     public function setRoles(string $role): static
     {   
-        if(!array_key_exists($role,self::ROLE_HIERARCHY) ){
-            throw new \InvalidArgumentException(sprintf('Rôle "%s" invalide. Rôles valides: %s',$role,implode(', ', array_keys(self::ROLE_HIERARCHY))));
+        $role = strtolower($role);
+
+        if(!array_key_exists($role,self::ROLE) ){
+            throw new \InvalidArgumentException(sprintf('Rôle "%s" invalide',$role));
         }
-        $this->roles = self::ROLE_HIERARCHY[$role];
+        $this->roles[] = self::ROLE[$role];
+
         return $this;
     }
 

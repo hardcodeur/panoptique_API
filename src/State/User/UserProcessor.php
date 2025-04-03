@@ -6,6 +6,7 @@ use ApiPlatform\Metadata\Operation;
 use ApiPlatform\State\ProcessorInterface;
 use App\Dto\User\UserCreateDto;
 use App\Dto\User\UserUpdateDto;
+use App\Dto\User\UserDetailDto;
 use App\Entity\User;
 use App\Entity\AuthUser;
 use App\Repository\UserRepository;
@@ -28,13 +29,14 @@ class UserProcessor implements ProcessorInterface
         if ($data instanceof UserCreateDto) {
             return $this->handleCreate($data);
         } elseif ($data instanceof UserUpdateDto) {
-            return $this->handleUpdate($data);
+            $userId = $uriVariables['id'] ?? null;
+            return $this->handleUpdate($userId,$data);
         }
 
         return $data;
     }
 
-    private function handleCreate(UserCreateDto $data): User
+    private function handleCreate(UserCreateDto $data): UserDetailDto
     {
         // Création d'un nouvel utilisateur
         $user = new User();
@@ -60,13 +62,20 @@ class UserProcessor implements ProcessorInterface
         $this->entityManager->persist($authUser);
         $this->entityManager->flush();
 
-        return $user;
+        return new UserDetailDto(
+            $user->getId(),
+            $user->getFirstName(),
+            $user->getLastName(),
+            $user->getCreatedAt(),
+            $user->getUpdatedAt(),
+            $authUser ? $authUser->getEmail() : null,
+            $authUser ? $authUser->getRoles() : null,
+        );
     }
 
-    private function handleUpdate(UserUpdateDto $data): User
+    private function handleUpdate(int $userId,UserUpdateDto $data): UserDetailDto
     {
         // Récupération de l'utilisateur existant
-        $userId = $data->getId();
         $user = $this->userRepository->find($userId);
         
         if (!$user) {
@@ -100,7 +109,15 @@ class UserProcessor implements ProcessorInterface
         // Persistance des modifications
         $this->entityManager->flush();
 
-        return $user;
+        return new UserDetailDto(
+            $user->getId(),
+            $user->getFirstName(),
+            $user->getLastName(),
+            $user->getCreatedAt(),
+            $user->getUpdatedAt(),
+            $authUser ? $authUser->getEmail() : null,
+            $authUser ? $authUser->getRoles() : null,
+        );
     }
 
     private function hashPassword(string $plainPassword): string

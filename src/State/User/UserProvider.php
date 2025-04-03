@@ -23,23 +23,14 @@ class UserProvider implements ProviderInterface
         // Transformation en DTOs
         return array_map(function ($user) {
             $authUser = $user->getAuthUser();
-                            
-            // Déterminer le rôle principal (le premier de la liste)
-            $roleName = 'Utilisateur';
-            if ($authUser && !empty($authUser->getRoles())) {
-                $roles = $authUser->getRoles();
-                // Simplification du nom du rôle pour l'affichage
-                $roleName = str_replace('ROLE_', '', $roles[0]);
-                $roleName = ucfirst(strtolower($roleName));
-            }
-                            
+                                        
             return new UserListDto(
                 $user->getId(),
                 $user->getFirstName(),
                 $user->getLastName(),
                 $user->getCreatedAt(),
                 $authUser ? $authUser->getEmail() : null,
-                $roleName
+                $authUser ? $authUser->getRoles() : null,
             );
         }, $users);
     }

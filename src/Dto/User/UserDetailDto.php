@@ -10,14 +10,13 @@ use ApiPlatform\Metadata\ApiProperty;
 class UserDetailDto
 {
     public function __construct(
+        
         #[ApiProperty(identifier: true)]
         private ?int $id = null,
         
         private ?string $firstName = null,
         
         private ?string $lastName = null,
-        
-        private ?string $fullName = null,
         
         private ?\DateTimeImmutable $createdAt = null,
         
@@ -45,12 +44,7 @@ class UserDetailDto
     {
         return $this->lastName;
     }
-    
-    public function getFullName(): ?string
-    {
-        return $this->fullName;
-    }
-    
+        
     public function getCreatedAt(): ?\DateTimeImmutable
     {
         return $this->createdAt;
