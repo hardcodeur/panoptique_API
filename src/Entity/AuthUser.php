@@ -4,10 +4,12 @@ namespace App\Entity;
 
 use App\Repository\AuthUserRepository;
 use Doctrine\ORM\Mapping as ORM;
-use Symfony\Component\Serializer\Annotation\Groups;
+use Symfony\Component\Security\Core\User\UserInterface;
+use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
+
 
 #[ORM\Entity(repositoryClass: AuthUserRepository::class)]
-class AuthUser 
+class AuthUser implements UserInterface, PasswordAuthenticatedUserInterface
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
@@ -36,6 +38,18 @@ class AuthUser
         "team_manager"=>"ROLE_TEAM_MANAGER",
         "agent"=>"ROLE_USER"
     ];
+
+    public function getUserIdentifier(): string
+    {
+        return $this->email;
+    }
+
+    public function eraseCredentials(): void
+    {
+        // Si tu stockes des données temporaires sensibles, efface-les ici
+    }
+
+    // SETTER GETTER
 
     public function getId(): ?int
     {
@@ -106,4 +120,5 @@ class AuthUser
 
         return $this;
     }
+
 }
