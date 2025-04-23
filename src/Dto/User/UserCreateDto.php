@@ -31,6 +31,10 @@ class UserCreateDto
         
         #[Assert\NotBlank(message: 'L\'email est obligatoire')]
         #[Assert\Email(message: 'L\'email {{ value }} n\'est pas valide')]
+        #[Assert\Regex(
+            pattern: '/^[a-zA-Z0-9._-]+@sgs\.(com|fr)$/',
+            message: "L'email doit être une adresse sgs"
+        )]
         private ?string $email = null,
         
         #[Assert\NotBlank(message: 'Le mot de passe est obligatoire')]
@@ -39,8 +43,8 @@ class UserCreateDto
             minMessage: 'Le mot de passe doit contenir au moins {{ limit }} caractères'
         )]
         #[Assert\Regex(
-            pattern: '/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).+$/',
-            message: 'Le mot de passe doit contenir au moins une minuscule, une majuscule et un chiffre'
+            pattern: '/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*]).*$/',
+            message: 'Le mot de passe doit contenir au moins 1 majuscule, 1 minuscule, 1 chiffre et 1 caractère spécial(!@#$%^&*)'
         )]
         private ?string $password = null,
         
