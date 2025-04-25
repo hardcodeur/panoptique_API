@@ -12,12 +12,11 @@ class TeamFixture extends Fixture
 
     public function load(ObjectManager $manager): void
     {   
-        
-
         foreach(self::TEAMLIST as $name ){
             $team = new Team();
             $team->setName($name);
             $manager->persist($team);
+            
             $this->addReference($name, $team);
         }
 

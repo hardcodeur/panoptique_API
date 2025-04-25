@@ -6,6 +6,7 @@ use App\Repository\ShiftRepository;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: ShiftRepository::class)]
+#[ORM\HasLifecycleCallbacks]
 class Shift
 {
     #[ORM\Id]
@@ -25,7 +26,7 @@ class Shift
     #[ORM\Column]
     private ?\DateTimeImmutable $created_at = null;
 
-    #[ORM\Column]
+    #[ORM\Column(nullable: true)]
     private ?\DateTimeImmutable $updated_at = null;
 
     #[ORM\ManyToOne]
@@ -102,6 +103,12 @@ class Shift
         return $this;
     }
 
+    #[ORM\PrePersist]
+    public function setCreatedAtValue(): void
+    {
+        $this->created_at = new \DateTimeImmutable();
+    }
+
     public function getUpdatedAt(): ?\DateTimeImmutable
     {
         return $this->updated_at;
@@ -112,6 +119,12 @@ class Shift
         $this->updated_at = $updated_at;
 
         return $this;
+    }
+
+    #[ORM\PreUpdate]
+    public function setUpdatedAtValue(): void
+    {
+        $this->updated_at = new \DateTimeImmutable();
     }
 
     public function getUser(): ?user

@@ -19,7 +19,7 @@ class LocationFixture extends Fixture implements DependentFixtureInterface
             ["name"=>"blaye","address"=>"26 Cr Bacalan, 33390 Blaye","team"=>"bordeaux"],
             ["name"=>"montoir","address"=>"Rue de la Pierre Percée, BP 9, 44550 Montoir-de-Bretagne","team"=>"nante"],
             ["name"=>"cheviré","address"=>"Quai de Cheviré, 44100 Nantes","team"=>"nante"],
-            ["name"=>"saint-Marc","address"=>"465 rue Alain Colas, ZI Portuaire de Saint-Marc, 29200 Brest","team"=>"brest"],
+            ["name"=>"saint-marc","address"=>"465 rue Alain Colas, ZI Portuaire de Saint-Marc, 29200 Brest","team"=>"brest"],
             ["name"=>"brest","address"=>"275 rue Monjaret de Kerjégu, 29200 Brest","team"=>"brest"],
         ];
 
@@ -30,6 +30,8 @@ class LocationFixture extends Fixture implements DependentFixtureInterface
             $team = $this->getReference($item['team'],Team::class);
             $location->setTeam($team);
             $manager->persist($location);
+
+            $this->addReference($item['name'], $location);
         }
 
         $manager->flush();

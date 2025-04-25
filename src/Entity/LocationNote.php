@@ -7,6 +7,7 @@ use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: LocationNoteRepository::class)]
+#[ORM\HasLifecycleCallbacks]
 class LocationNote
 {
     #[ORM\Id]
@@ -27,7 +28,7 @@ class LocationNote
     #[ORM\Column]
     private ?\DateTimeImmutable $created_at = null;
 
-    #[ORM\Column]
+    #[ORM\Column(nullable: true)]
     private ?\DateTimeImmutable $updated_at = null;
 
     public function getId(): ?int

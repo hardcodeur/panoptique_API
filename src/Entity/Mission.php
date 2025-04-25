@@ -8,6 +8,7 @@ use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: MissionRepository::class)]
+#[ORM\HasLifecycleCallbacks]
 class Mission
 {
     #[ORM\Id]
@@ -24,7 +25,7 @@ class Mission
     #[ORM\Column]
     private ?\DateTimeImmutable $created_at = null;
 
-    #[ORM\Column]
+    #[ORM\Column(nullable: true)]
     private ?\DateTimeImmutable $updated_at = null;
 
     #[ORM\ManyToOne]
