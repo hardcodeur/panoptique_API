@@ -4,7 +4,19 @@ namespace App\Entity;
 
 use App\Repository\TeamRepository;
 use Doctrine\ORM\Mapping as ORM;
+use ApiPlatform\Metadata\ApiResource;
+use ApiPlatform\Metadata;
+use App\State\Team\TeamProvider;
+use App\Dto\Team\TeamListDto;
 
+#[ApiResource(
+    operations: [
+        new Metadata\GetCollection(
+            output: TeamListDto::class,
+            provider: TeamProvider::class
+        ),
+    ]
+)]
 #[ORM\Entity(repositoryClass: TeamRepository::class)]
 class Team
 {

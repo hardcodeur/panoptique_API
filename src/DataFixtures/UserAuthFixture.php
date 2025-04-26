@@ -32,8 +32,9 @@ class UserAuthFixture extends Fixture implements DependentFixtureInterface
             $user->setFirstName($faker->firstName());
             $user->setLastName($faker->lastName());
             $team = $this->getReference($teamFixture[array_rand($teamFixture)],Team::class);
+            $user->setPhone($faker->phoneNumber());
             $user->setTeam($team);
-            $user->setStatus(0);
+            $user->setStatus(1);
 
             $authUser = new AuthUser();
             $email="test{$i}@sgs.com";

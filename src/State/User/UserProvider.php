@@ -26,8 +26,12 @@ class UserProvider implements ProviderInterface
                                         
             return new UserListDto(
                 $user->getId(),
+                $user->getFirstName()." ".$user->getLastName(),
                 $user->getFirstName(),
                 $user->getLastName(),
+                $user->getPhone(),
+                $user->getTeam()?->getName(),
+                $user->getStatus(),
                 $user->getCreatedAt(),
                 $authUser ? $authUser->getEmail() : null,
                 $authUser ? $authUser->getRoles() : null,

@@ -68,10 +68,13 @@ class User
 
     #[ORM\ManyToOne]
     #[ORM\JoinColumn(name: 'team_id', referencedColumnName: 'id', nullable: true)]
-    private ?team $team = null;
+    private ?Team $team = null;
 
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $profil_picture_path = null;
+
+    #[ORM\Column(length: 20)]
+    private ?string $phone = null;
 
     public function getId(): ?int
     {
@@ -98,7 +101,6 @@ class User
     public function setLastName(string $last_name): static
     {
         $this->last_name = $last_name;
-
         return $this;
     }
 
@@ -167,12 +169,12 @@ class User
         return $this;
     }
 
-    public function getTeam(): ?team
+    public function getTeam(): ?Team
     {
         return $this->team;
     }
 
-    public function setTeam(?team $team): static
+    public function setTeam(?Team $team): static
     {
         $this->team = $team;
 
@@ -187,6 +189,18 @@ class User
     public function setProfilPicturePath(?string $profil_picture_path): static
     {
         $this->profil_picture_path = $profil_picture_path;
+
+        return $this;
+    }
+
+    public function getPhone(): ?string
+    {
+        return $this->phone;
+    }
+
+    public function setPhone(string $phone): static
+    {
+        $this->phone = $phone;
 
         return $this;
     }
