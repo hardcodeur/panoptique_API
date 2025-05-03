@@ -66,7 +66,7 @@ class User
     #[ORM\Column(type: Types::SMALLINT, nullable: true)]
     private ?int $status = null;
 
-    #[ORM\ManyToOne]
+    #[ORM\ManyToOne(targetEntity: Team::class, inversedBy: 'users')]
     #[ORM\JoinColumn(name: 'team_id', referencedColumnName: 'id', nullable: true)]
     private ?Team $team = null;
 
@@ -75,6 +75,8 @@ class User
 
     #[ORM\Column(length: 20)]
     private ?string $phone = null;
+
+    
 
     public function getId(): ?int
     {

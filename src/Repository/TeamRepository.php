@@ -16,6 +16,15 @@ class TeamRepository extends ServiceEntityRepository
         parent::__construct($registry, Team::class);
     }
 
+    public function findTeamsUsers(): array
+    {
+        return $this->createQueryBuilder('t')
+            ->leftJoin('t.users', 'u')
+            ->addSelect('u')
+            ->getQuery()
+            ->getResult();
+    }
+
 //    /**
 //     * @return Team[] Returns an array of Team objects
 //     */

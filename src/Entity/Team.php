@@ -8,6 +8,8 @@ use ApiPlatform\Metadata\ApiResource;
 use ApiPlatform\Metadata;
 use App\State\Team\TeamProvider;
 use App\Dto\Team\TeamListDto;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 
 #[ApiResource(
     operations: [
@@ -28,6 +30,14 @@ class Team
     #[ORM\Column(length: 100)]
     private ?string $name = null;
 
+    #[ORM\OneToMany(mappedBy: "team", targetEntity: User::class)]
+    private Collection $users;
+
+    public function __construct()
+    {
+        $this->users = new ArrayCollection();
+    }
+
     public function getId(): ?int
     {
         return $this->id;
@@ -43,5 +53,10 @@ class Team
         $this->name = $name;
 
         return $this;
+    }
+
+    public function getUsers(): Collection
+    {
+        return $this->users;
     }
 }
