@@ -1,5 +1,5 @@
 <?php
-namespace App\Dto\Team;
+namespace App\Dto\TeamUsers;
 
 use ApiPlatform\Metadata\ApiProperty;
 

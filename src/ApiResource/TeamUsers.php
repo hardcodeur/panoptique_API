@@ -3,8 +3,10 @@ namespace App\ApiResource;
 
 use ApiPlatform\Metadata\Get;
 use ApiPlatform\Metadata\ApiResource;
-use App\Dto\Team\TeamUsersDto;
-use App\State\Team\TeamUsersProvider;
+use App\Dto\TeamUsers\TeamUsersDto;
+use App\State\TeamUsers\TeamUsersProvider;
+use App\Dto\TeamUsers\TeamUnassignedUsersDto;
+use App\State\TeamUsers\TeamUnassignedUsersProvider;
 
 #[ApiResource(
     operations: [
@@ -17,4 +19,17 @@ use App\State\Team\TeamUsersProvider;
     ]
 )]
 class TeamUsers 
+{}
+
+#[ApiResource(
+    operations: [
+        new Get(
+            uriTemplate: '/team/unassigned-users',
+            provider: TeamUnassignedUsersProvider::class,
+            output: TeamUnassignedUsersDto::class,
+            description: 'Récupérer tous les utilisateurs qui ne sont actuellement affectés à aucune équipe'
+        )
+    ]
+)]
+class TeamUnassignedUsers 
 {}

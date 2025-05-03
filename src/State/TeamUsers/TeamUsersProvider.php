@@ -1,11 +1,11 @@
 <?php
 
-namespace App\State\Team;
+namespace App\State\TeamUsers;
 
 use ApiPlatform\Metadata\Operation;
 use ApiPlatform\State\ProviderInterface;
 
-use App\Dto\Team\TeamUsersDto;
+use App\Dto\TeamUsers\TeamUsersDto;
 use App\Dto\Team\UserDto;
 use App\Repository\TeamRepository;
 

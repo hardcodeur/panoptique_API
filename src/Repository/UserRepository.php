@@ -16,6 +16,14 @@ class UserRepository extends ServiceEntityRepository
         parent::__construct($registry, User::class);
     }
 
+    public function findUsersWithoutTeam()
+    {
+    return $this->createQueryBuilder('u')
+        ->where('u.team IS NULL')
+        ->getQuery()
+        ->getResult();
+    }
+
 //    /**
 //     * @return User[] Returns an array of User objects
 //     */
