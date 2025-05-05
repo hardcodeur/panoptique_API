@@ -70,9 +70,10 @@ class ProfilDetailDto
         return $this->email;
     }
     
-    public function getRoles(): array
+    public function getRoles(): string
     {
-        return $this->roles;
+        $role = $this->roles[0];
+        return strtolower(str_replace(['ROLE_','_'],['',' '], $role));
     }
 
     public function getTeam(): ?string

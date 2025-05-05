@@ -37,7 +37,7 @@ class LoginSubscriber implements EventSubscriberInterface
         $this->em->flush();
 
         // Ajoute l'ID utilisateur à la réponse
-        $data['authId'] = $authUser->getId();
+        $data['userId'] = $authUser->getUser()->getId();
         $event->setData($data);
     }
 }

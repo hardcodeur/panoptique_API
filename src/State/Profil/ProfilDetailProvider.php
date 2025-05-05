@@ -36,7 +36,7 @@ class ProfilDetailProvider implements ProviderInterface
             $user->getCreatedAt(),
             $user->getUpdatedAt(),
             $user->getPhone(),
-            $user->getTeam(),
+            $user->getTeam()->getName(),
             $authUser ? $authUser->getEmail() : null,
             $authUser ? $authUser->getRoles() : null,
             $authUser ? $authUser->getLastLogin() : null

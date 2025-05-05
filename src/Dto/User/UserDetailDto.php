@@ -8,7 +8,10 @@ use ApiPlatform\Metadata\ApiProperty;
  * DTO for detailed User representation in API responses
  */
 class UserDetailDto
-{
+{   
+
+    private const DATE_FORMAT = "d/m/Y H:i:s";
+
     public function __construct(
         
         #[ApiProperty(identifier: true)]
@@ -21,10 +24,15 @@ class UserDetailDto
         private ?\DateTimeImmutable $createdAt = null,
         
         private ?\DateTimeImmutable $updatedAt = null,
+
+        private ?string $phone = null,
+        
+        private ?string $team = null,
         
         private ?string $email = null,
         
         private array $roles = [],
+
         
         private ?\DateTimeImmutable $lastLogin = null
     ) {
@@ -45,14 +53,25 @@ class UserDetailDto
         return $this->lastName;
     }
         
-    public function getCreatedAt(): ?\DateTimeImmutable
+    public function getCreatedAt(): ?string
     {
-        return $this->createdAt;
+        $date = $this->createdAt->setTimezone(new \DateTimeZone('Europe/Paris'));
+        return $date->format(self::DATE_FORMAT);
     }
     
-    public function getUpdatedAt(): ?\DateTimeImmutable
+    public function getUpdatedAt(): ?string
     {
-        return $this->updatedAt;
+        if ($this->updatedAt === null) {
+            return $this->updatedAt;
+        }
+
+        $date = $this->updatedAt->setTimezone(new \DateTimeZone('Europe/Paris'));
+        return $date->format(self::DATE_FORMAT);
+    }
+
+    public function getPhone(): ?string
+    {
+        return $this->phone;
     }
     
     public function getEmail(): ?string
@@ -60,14 +79,25 @@ class UserDetailDto
         return $this->email;
     }
     
-    public function getRoles(): array
+    public function getRoles(): string
     {
-        return $this->roles;
+        $role = $this->roles[0];
+        return strtolower(str_replace(['ROLE_','_'],['',' '], $role));
+    }
+
+    public function getTeam(): ?string
+    {
+        return $this->team;
     }
     
-    public function getLastLogin(): ?\DateTimeImmutable
+    public function getLastLogin(): ?string
     {
-        return $this->lastLogin;
+        if ($this->lastLogin === null) {
+            return $this->lastLogin;
+        }
+
+        $date = $this->lastLogin->setTimezone(new \DateTimeZone('Europe/Paris'));
+        return $date->format(self::DATE_FORMAT);
     }
 }
 
