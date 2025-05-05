@@ -12,6 +12,8 @@ class MissionListDto
 
 
     public ?\IntlDateFormatter $dateFormatter = null;
+    private const HOUR_FORMAT = "H\hi";
+
     
     private function getDateFormatter(): \IntlDateFormatter
     {
@@ -58,6 +60,12 @@ class MissionListDto
         return $this->getDateFormatter()->format($date);
     }
 
+    public function getStartHourFormat(): ?string
+    {   
+        $date = $this->start->setTimezone(new \DateTimeZone('Europe/Paris'));
+        return $date->format(self::HOUR_FORMAT);
+    }
+
     public function getEnd(): ?\DateTimeImmutable
     {
         return $this->end;
@@ -67,6 +75,12 @@ class MissionListDto
     {
         $date = $this->end->setTimezone(new \DateTimeZone('Europe/Paris'));
         return $this->getDateFormatter()->format($date);
+    }
+
+    public function getEndHourFormat(): ?string
+    {   
+        $date = $this->end->setTimezone(new \DateTimeZone('Europe/Paris'));
+        return $date->format(self::HOUR_FORMAT);
     }
 
     public function getCustomer(): ?string
