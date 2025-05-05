@@ -38,6 +38,8 @@ class LoginSubscriber implements EventSubscriberInterface
 
         // Ajoute l'ID utilisateur à la réponse
         $data['userId'] = $authUser->getUser()->getId();
+        $roles=$authUser->getRoles();
+        $data["userRole"] = strtolower(str_replace('ROLE_','', $roles[0]));
         $event->setData($data);
     }
 }
