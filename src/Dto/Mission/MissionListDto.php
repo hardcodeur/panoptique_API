@@ -8,7 +8,27 @@ use ApiPlatform\Metadata\ApiProperty;
  * DTO for detailed  Profil representation in API responses
  */
 class MissionListDto
-{
+{   
+
+
+    public ?\IntlDateFormatter $dateFormatter = null;
+    
+    private function getDateFormatter(): \IntlDateFormatter
+    {
+        if ($this->dateFormatter === null) {
+            $this->dateFormatter = new \IntlDateFormatter(
+                'fr_FR', 
+                \IntlDateFormatter::FULL, 
+                \IntlDateFormatter::NONE,
+                'Europe/Paris',
+                \IntlDateFormatter::GREGORIAN,
+                'EEEE d MMMM' // format "lundi 6 mai"
+            );
+        }
+        
+        return $this->dateFormatter;
+    }
+
     public function __construct(
         #[ApiProperty(identifier: true)]
         private ?int $id = null,
@@ -32,9 +52,21 @@ class MissionListDto
         return $this->start;
     }
 
+    public function getStartDateFormat(): ?string
+    {   
+        $date = $this->start->setTimezone(new \DateTimeZone('Europe/Paris'));
+        return $this->getDateFormatter()->format($date);
+    }
+
     public function getEnd(): ?\DateTimeImmutable
     {
         return $this->end;
+    }
+
+    public function getEndDateFormat(): ?string
+    {
+        $date = $this->end->setTimezone(new \DateTimeZone('Europe/Paris'));
+        return $this->getDateFormatter()->format($date);
     }
 
     public function getCustomer(): ?string
@@ -42,10 +74,16 @@ class MissionListDto
         return $this->customer;
     }
 
-    // public function getDuration(): ?string
-    // {
-    //     return $this->duration;
-    // }
+    public function getDuration(): ?string
+    {   
+        $start = $this->start->setTimezone(new \DateTimeZone('Europe/Paris'));
+        $end = $this->end->setTimezone(new \DateTimeZone('Europe/Paris'));
+        $interval = $start->diff($end);
+
+        $totalHours = ($interval->days * 24) + $interval->h;
+        
+        return $totalHours . 'h';
+    }
 
     public function getProduct(): ?string
     {

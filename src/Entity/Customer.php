@@ -21,7 +21,7 @@ class Customer
 
     #[ORM\ManyToOne]
     #[ORM\JoinColumn(nullable: false)]
-    private ?location $location = null;
+    private ?Location $location = null;
 
     public function getId(): ?int
     {
@@ -52,7 +52,7 @@ class Customer
         return $this;
     }
 
-    public function getLocation(): ?location
+    public function getLocation(): ?Location
     {
         return $this->location;
     }
