@@ -3,6 +3,7 @@
 namespace App\Entity;
 
 use App\Repository\LocationRepository;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: LocationRepository::class)]
@@ -21,7 +22,10 @@ class Location
 
     #[ORM\ManyToOne]
     #[ORM\JoinColumn(nullable: false)]
-    private ?team $team = null;
+    private ?Team $team = null;
+
+    #[ORM\OneToMany(mappedBy: 'location', targetEntity: LocationNote::class)]
+    private Collection $locationNotes;
 
     public function getId(): ?int
     {
@@ -60,6 +64,36 @@ class Location
     public function setTeam(?team $team): static
     {
         $this->team = $team;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, LocationNote>
+     */
+    public function getLocationNotes(): Collection
+    {
+        return $this->locationNotes;
+    }
+
+    public function addLocationNote(LocationNote $locationNote): static
+    {
+        if (!$this->locationNotes->contains($locationNote)) {
+            $this->locationNotes->add($locationNote);
+            $locationNote->setLocation($this);
+        }
+
+        return $this;
+    }
+
+    public function removeLocationNote(LocationNote $locationNote): static
+    {
+        if ($this->locationNotes->removeElement($locationNote)) {
+            // set the owning side to null (unless already changed)
+            if ($locationNote->getLocation() === $this) {
+                $locationNote->setLocation(null);
+            }
+        }
 
         return $this;
     }

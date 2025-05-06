@@ -82,7 +82,7 @@ class UserListDto
     public function getRole(): ?string
     {   
         $role = $this->role[0];
-        return strtolower(str_replace(['ROLE_','_'],['',' '], $role));
+        return strtolower(str_replace('ROLE_','', $role));
     }
 
 

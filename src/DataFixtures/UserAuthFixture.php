@@ -58,9 +58,9 @@ class UserAuthFixture extends Fixture implements DependentFixtureInterface
             }
         }
         
-        // Créer les admins et managers (en plus des utilisateurs par équipe)
-        $this->createAdminUsers($manager, $faker);
-        $this->createManagerUsers($manager, $faker);
+        // // Créer les admins et managers (en plus des utilisateurs par équipe)
+        // $this->createAdminUsers($manager, $faker);
+        // $this->createManagerUsers($manager, $faker);
         
         $manager->flush();
     }
