@@ -1,20 +1,17 @@
 <?php
 
-namespace App\Dto\Mission;
+namespace App\Dto\MissionShifts;
 
 use ApiPlatform\Metadata\ApiProperty;
 
 /**
- * DTO for detailed Mission representation in API responses
+ * DTO for mission shifts representation in API responses
  */
-class MissionListDto
+class MissionShiftsDto
 {   
-
-
     public ?\IntlDateFormatter $dateFormatter = null;
-    private const HOUR_FORMAT = "H\hi";
+    private const FULL_FORMAT = "d/m/Y H:i";
 
-    
     private function getDateFormatter(): \IntlDateFormatter
     {
         if ($this->dateFormatter === null) {
@@ -36,11 +33,12 @@ class MissionListDto
         private ?int $id = null,
         private ?\DateTimeImmutable $start = null,
         private ?\DateTimeImmutable $end = null,
-        private ?string $customer = null,
-        private ?string $product = null,
         private ?string $location = null,
-        private ?string $address = null,
-        private ?string $team = null,
+        private ?string $teamName = null,
+        private ?\DateTimeImmutable $createdAt = null,
+        private ?\DateTimeImmutable $updatedAt = null,
+        /** @var ShiftDto[] */
+        private array $shifts = [],
     ) {
     }
 
@@ -60,48 +58,15 @@ class MissionListDto
         return $this->getDateFormatter()->format($date);
     }
 
-    public function getStartHourFormat(): ?string
-    {   
-        $date = $this->start->setTimezone(new \DateTimeZone('Europe/Paris'));
-        return $date->format(self::HOUR_FORMAT);
-    }
-
     public function getEnd(): ?\DateTimeImmutable
     {
         return $this->end;
     }
-
+    
     public function getEndDateFormat(): ?string
     {
         $date = $this->end->setTimezone(new \DateTimeZone('Europe/Paris'));
         return $this->getDateFormatter()->format($date);
-    }
-
-    public function getEndHourFormat(): ?string
-    {   
-        $date = $this->end->setTimezone(new \DateTimeZone('Europe/Paris'));
-        return $date->format(self::HOUR_FORMAT);
-    }
-
-    public function getCustomer(): ?string
-    {
-        return $this->customer;
-    }
-
-    public function getDuration(): ?string
-    {   
-        $start = $this->start->setTimezone(new \DateTimeZone('Europe/Paris'));
-        $end = $this->end->setTimezone(new \DateTimeZone('Europe/Paris'));
-        $interval = $start->diff($end);
-
-        $totalHours = ($interval->days * 24) + $interval->h;
-        
-        return $totalHours . 'h';
-    }
-
-    public function getProduct(): ?string
-    {
-        return $this->product;
     }
 
     public function getLocation(): ?string
@@ -109,14 +74,38 @@ class MissionListDto
         return $this->location;
     }
 
-    public function getAddress(): ?string
+    public function getTeamName(): ?string
     {
-        return $this->address;
+        return $this->teamName;
     }
 
-    public function getTeam(): ?string
-    {
-        return $this->team;
-    }
-}
 
+    public function getCreatedAt(): ?string
+    {   
+        if($this->createdAt){
+            $date = $this->createdAt->setTimezone(new \DateTimeZone('Europe/Paris'));
+            return $date->format(self::FULL_FORMAT);
+        }
+        
+        return $this->createdAt;
+    }
+    
+    public function getUpdatedAt(): ?string
+    {   
+        if($this->updatedAt){
+            $date = $this->updatedAt->setTimezone(new \DateTimeZone('Europe/Paris'));
+            return $date->format(self::FULL_FORMAT);
+        }
+
+        return $this->updatedAt;
+    }
+
+    /**
+    * @return ShiftDto[]
+    */
+    public function getShifts(): array
+    {
+        return $this->shifts;
+    }
+    
+}  

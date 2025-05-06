@@ -16,6 +16,15 @@ class MissionRepository extends ServiceEntityRepository
         parent::__construct($registry, Mission::class);
     }
 
+    public function findMissionShifts(): array
+    {
+        return $this->createQueryBuilder('t')
+            ->leftJoin('t.shifts', 'u')
+            ->addSelect('u')
+            ->getQuery()
+            ->getResult();
+    }
+
 //    /**
 //     * @return Mission[] Returns an array of Mission objects
 //     */

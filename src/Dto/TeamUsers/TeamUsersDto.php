@@ -12,7 +12,7 @@ class TeamUsersDto
         #[ApiProperty(identifier: true)]
         private ?int $id = null,
         private ?string $teamName = null,
-        /** @var UserTeamDto[] */
+        /** @var UserDto[] */
         private array $users = [],
     ) {
     }
@@ -28,7 +28,7 @@ class TeamUsersDto
     }
 
     /**
-    * @return UserTeamDto[]
+    * @return UserDto[]
     */
     public function getUsers(): array
     {

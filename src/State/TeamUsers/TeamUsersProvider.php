@@ -6,7 +6,7 @@ use ApiPlatform\Metadata\Operation;
 use ApiPlatform\State\ProviderInterface;
 
 use App\Dto\TeamUsers\TeamUsersDto;
-use App\Dto\Team\UserDto;
+use App\Dto\User\UserDto;
 use App\Repository\TeamRepository;
 
 class TeamUsersProvider implements ProviderInterface
