@@ -23,7 +23,7 @@ class MissionFixture extends Fixture implements DependentFixtureInterface
             ],
             [
                 "start"=>$date->add(new \DateInterval('P5D'))->setTime(11,30),
-                "end"=>$date->add(new \DateInterval('P1D'))->setTime(23,0),
+                "end"=>$date->add(new \DateInterval('P6D'))->setTime(23,0),
                 "customer"=>"dpr_essence","team"=>$team[0]
             ],
 
@@ -34,7 +34,7 @@ class MissionFixture extends Fixture implements DependentFixtureInterface
             ],
             [
                 "start"=>$date->add(new \DateInterval('P5D'))->setTime(11,30),
-                "end"=>$date->add(new \DateInterval('P1D'))->setTime(23,0),
+                "end"=>$date->add(new \DateInterval('P6D'))->setTime(23,0),
                 "customer"=>"nordGulf_phénol","team"=>$team[1]
             ],
 
@@ -45,7 +45,7 @@ class MissionFixture extends Fixture implements DependentFixtureInterface
             ],
             [
                 "start"=>$date->add(new \DateInterval('P5D'))->setTime(11,30),
-                "end"=>$date->add(new \DateInterval('P1D'))->setTime(23,0),
+                "end"=>$date->add(new \DateInterval('P6D'))->setTime(23,0),
                 "customer"=>"transGaz_gaz_liquéfié","team"=>$team[2]
             ],
         ];
