@@ -36,11 +36,11 @@ class ShiftFixture extends Fixture implements DependentFixtureInterface
                 $shift = new Shift();
                 
                 // Définir les heures de début/fin en fonction du créneau
-                if ($i === 1) { // Matin (6h-14h)
+                if ($i <= 1) { // Matin (6h-14h)
                     $start = (clone $missionStart)->setTime(6, 0);
                     $end = (clone $missionStart)->setTime(14, 0);
                     $activitie = $activities[0];
-                } elseif ($i === 3) { // Après-midi (14h-22h)
+                } elseif ($i <= 3) { // Après-midi (14h-22h)
                     $start = (clone $missionStart)->setTime(14, 0);
                     $end = (clone $missionStart)->setTime(22, 0);
                     $activitie = $activities[1];

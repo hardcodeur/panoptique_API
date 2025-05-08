@@ -99,10 +99,8 @@ class MissionShiftsDto
         return $this->updatedAt;
     }
 
-    /**
-    * @return ShiftDto[]
-    */
-    public function getShifts(): array
+
+    public function getShifts(): ?array
     {
         return $this->shifts;
     }
