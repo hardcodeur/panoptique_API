@@ -15,59 +15,91 @@ class ShiftFixture extends Fixture implements DependentFixtureInterface
     {   
         $missions = $manager->getRepository(Mission::class)->findAll();
         $users = $manager->getRepository(User::class)->findAll();
-        $activities = ['co', 'surv', 'deco'];
         
         foreach ($missions as $mission) {
+            $team = $mission->getTeam();
             $missionStart = $mission->getStart();
             $missionEnd = $mission->getEnd();
-            $team = $mission->getTeam();
             
-            // Filtrer les utilisateurs de la même équipe que la mission
-            $teamUsers = array_filter($users, function($user) use ($team) {
-                return $user->getTeam() === $team;
-            });
+            // Filtrer les utilisateurs de la même équipe
+            $teamUsers = array_filter($users, fn($user) => $user->getTeam() === $team);
             
-            if (empty($teamUsers)) {
-                continue;
+            if (count($teamUsers) < 2) {
+                continue; // On a besoin d'au moins 2 users pour co/deco
             }
             
-            // Créer 3 shifts par mission (matin, après-midi, nuit)
-            for ($i = 0; $i < 6; $i++) {
-                $shift = new Shift();
-                
-                // Définir les heures de début/fin en fonction du créneau
-                if ($i <= 1) { // Matin (6h-14h)
-                    $start = (clone $missionStart)->setTime(6, 0);
-                    $end = (clone $missionStart)->setTime(14, 0);
-                    $activitie = $activities[0];
-                } elseif ($i <= 3) { // Après-midi (14h-22h)
-                    $start = (clone $missionStart)->setTime(14, 0);
-                    $end = (clone $missionStart)->setTime(22, 0);
-                    $activitie = $activities[1];
-                } else { // Nuit (22h-6h)
-                    $start = (clone $missionStart)->setTime(22, 0);
-                    $end = (clone $missionStart)->add(new \DateInterval('P1D'))->setTime(6, 0);
-                    $activitie = $activities[2];
-                }
-                
-                // Vérifier que le shift ne dépasse pas la fin de la mission
-                if ($end > $missionEnd) {
-                    $end = clone $missionEnd;
-                }
-                
-                $shift->setStart($start);
-                $shift->setEnd($end);
-                $shift->setActivity($activitie);
-                $shift->setMission($mission);
-                
-                $randomUser = $teamUsers[array_rand($teamUsers)];
-                $shift->setUser($randomUser);
-                
-                $manager->persist($shift);
-            }
+            // 1. Shift de CONNEXION (2 users)
+            $this->createShiftPair(
+                $manager,
+                $mission,
+                $teamUsers,
+                $missionStart->setTime(6, 0), // Début à 6h
+                $missionStart->setTime(8, 0), // Fin à 8h
+                'co'
+            );
+            
+            // 2. Shift de SURVEILLANCE (1 user)
+            $this->createShift(
+                $manager,
+                $mission,
+                $teamUsers[array_rand($teamUsers)],
+                $missionStart->setTime(8, 0),  // Début à 8h
+                $missionStart->setTime(16, 0), // Fin à 16h
+                'surv'
+            );
+            
+            // 3. Second shift de SURVEILLANCE (1 user différent)
+            $surveillanceUser = $this->getDifferentUser($teamUsers, $teamUsers[array_rand($teamUsers)]);
+            $this->createShift(
+                $manager,
+                $mission,
+                $surveillanceUser,
+                $missionStart->setTime(16, 0), // Début à 16h
+                $missionStart->setTime(22, 0),  // Fin à 22h
+                'surv'
+            );
+            
+            // 4. Shift de DECONNEXION (2 users)
+            $this->createShiftPair(
+                $manager,
+                $mission,
+                $teamUsers,
+                $missionStart->setTime(22, 0),  // Début à 22h
+                $missionStart->add(new \DateInterval('P1D'))->setTime(6, 0), // Fin à 6h du lendemain
+                'deco'
+            );
         }
 
         $manager->flush();
+    }
+
+    private function createShiftPair(ObjectManager $manager, Mission $mission, array $users, \DateTimeImmutable $start, \DateTimeImmutable $end, string $activity): void
+    {
+        // Prendre 2 users différents
+        $user1 = $users[array_rand($users)];
+        $user2 = $this->getDifferentUser($users, $user1);
+        
+        // Créer deux shifts identiques avec des users différents
+        $this->createShift($manager, $mission, $user1, $start, $end, $activity);
+        $this->createShift($manager, $mission, $user2, $start, $end, $activity);
+    }
+
+    private function createShift(ObjectManager $manager, Mission $mission, User $user, \DateTimeImmutable $start, \DateTimeImmutable $end, string $activity): void
+    {
+        $shift = new Shift();
+        $shift->setStart($start);
+        $shift->setEnd($end);
+        $shift->setActivity($activity);
+        $shift->setMission($mission);
+        $shift->setUser($user);
+        
+        $manager->persist($shift);
+    }
+
+    private function getDifferentUser(array $users, User $excludeUser): User
+    {
+        $availableUsers = array_filter($users, fn($user) => $user !== $excludeUser);
+        return $availableUsers[array_rand($availableUsers)];
     }
 
     public function getDependencies(): array
