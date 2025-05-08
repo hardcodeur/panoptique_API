@@ -21,61 +21,47 @@ class MissionShiftsProvider implements ProviderInterface
         return array_map(function ($mission) {
             // Initialiser la structure des shifts par activité
             $shiftsByActivity = [
-                'connexion' => [
-                    'startHourFormat' => '',
-                    'endHourFormat' => '',
-                    'users' => []
-                ],
-                'surveillance' => [
-                    'startHourFormat' => '',
-                    'endHourFormat' => '',
-                    'users' => []
-                ],
-                'deconnexion' => [
-                    'startHourFormat' => '',
-                    'endHourFormat' => '',
-                    'users' => []
-                ]
+                'connexion' => ['shift' => []],
+                'surveillance' => ['shift' => []],
+                'deconnexion' => ['shift' => []]
             ];
             
-            // Remplir les données
+            // Grouper les shifts par activité
             foreach ($mission->getShifts() as $shift) {
                 $user = $shift->getUser();
                 $authUser = $user->getAuthUser();
                 
-                $activity = $shift->getActivity();
-                
-                // Formater les heures (ex: "08h00")
-                $startHour = $shift->getStart()->format('H\hi');
-                $endHour = $shift->getEnd()->format('H\hi');
-                
-                // Stocker les heures pour cette activité
-                $shiftsByActivity[$activity]['startHourFormat'] = $startHour;
-                $shiftsByActivity[$activity]['endHourFormat'] = $endHour;
-                
-                // Ajouter l'utilisateur
-                $role = $authUser->getRoles();
-                $shiftsByActivity[$activity]['users'][] = [
-                    'id' => $shift->getId(),
-                    'userFullname' => $user->getFirstName().' '.$user->getLastName(),
-                    'userRole' => strtolower(str_replace('ROLE_', '', $role[0]))
+                $shiftData = [
+                    'start' => $shift->getStart(),
+                    'end' => $shift->getEnd(),
+                    'startHourFormat' => $shift->getStart()->format('H\hi'),
+                    'endHourFormat' => $shift->getEnd()->format('H\hi'),
+                    'users' => [
+                        [
+                            'id' => $user->getId(),
+                            'userFullname' => $user->getFirstName().' '.$user->getLastName(),
+                            'userRole' => $authUser->getRoles()
+                        ]
+                    ]
                 ];
+                
+                $activity = $shift->getActivity();
+                $shiftsByActivity[$activity]['shift'][] = $shiftData;
             }
             
             $customer = $mission->getCustomer();
             $team = $mission->getTeam();
             $location = $customer->getLocation();
             
-            return new MissionShiftsDto(
-                $mission->getId(),
-                $mission->getStart(),
-                $mission->getEnd(),
-                $location->getName(),
-                $team->getName(),
-                $mission->getCreatedAt(),
-                $mission->getUpdatedAt(),
-                $shiftsByActivity
-            );
+            return [
+                'id' => $mission->getId(),
+                'start' => $mission->getStart(),
+                'end' => $mission->getEnd(),
+                'location' => $location->getName(),
+                'teamName' => $team->getName(),
+                'createdAt' => $mission->getCreatedAt()->format('d/m/Y H:i'),
+                'shifts' => $shiftsByActivity
+            ];
         }, $missions);
     }
 }

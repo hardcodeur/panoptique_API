@@ -22,8 +22,13 @@ class MissionFixture extends Fixture implements DependentFixtureInterface
                 "customer"=>"ccmp_bitume","team"=>$team[0]
             ],
             [
-                "start"=>$date->add(new \DateInterval('P5D'))->setTime(11,30),
-                "end"=>$date->add(new \DateInterval('P6D'))->setTime(23,0),
+                "start"=>$date->add(new \DateInterval('P2D'))->setTime(11,30),
+                "end"=>$date->add(new \DateInterval('P3D'))->setTime(23,0),
+                "customer"=>"dpr_essence","team"=>$team[0]
+            ],
+            [
+                "start"=>$date->add(new \DateInterval('P7D'))->setTime(11,30),
+                "end"=>$date->add(new \DateInterval('P8D'))->setTime(23,0),
                 "customer"=>"dpr_essence","team"=>$team[0]
             ],
 
@@ -32,10 +37,17 @@ class MissionFixture extends Fixture implements DependentFixtureInterface
                 "end"=>$date->add(new \DateInterval('P1D'))->setTime(10,0),
                 "customer"=>"ocealab_méthanol","team"=>$team[1]
             ],
+            
             [
-                "start"=>$date->add(new \DateInterval('P5D'))->setTime(11,30),
-                "end"=>$date->add(new \DateInterval('P6D'))->setTime(23,0),
+                "start"=>$date->add(new \DateInterval('P2D'))->setTime(11,30),
+                "end"=>$date->add(new \DateInterval('P3D'))->setTime(23,0),
                 "customer"=>"nordGulf_phénol","team"=>$team[1]
+            ],
+
+            [
+                "start"=>$date->add(new \DateInterval('P7D'))->setTime(11,30),
+                "end"=>$date->add(new \DateInterval('P8D'))->setTime(23,0),
+                "customer"=>"dpr_essence","team"=>$team[1]
             ],
 
             [
@@ -44,9 +56,14 @@ class MissionFixture extends Fixture implements DependentFixtureInterface
                 "customer"=>"nautichem_acide_nitrique","team"=>$team[2]
             ],
             [
-                "start"=>$date->add(new \DateInterval('P5D'))->setTime(11,30),
-                "end"=>$date->add(new \DateInterval('P6D'))->setTime(23,0),
+                "start"=>$date->add(new \DateInterval('P2D'))->setTime(11,30),
+                "end"=>$date->add(new \DateInterval('P3D'))->setTime(23,0),
                 "customer"=>"transGaz_gaz_liquéfié","team"=>$team[2]
+            ],
+            [
+                "start"=>$date->add(new \DateInterval('P7D'))->setTime(11,30),
+                "end"=>$date->add(new \DateInterval('P8D'))->setTime(23,0),
+                "customer"=>"dpr_essence","team"=>$team[2]
             ],
         ];
 

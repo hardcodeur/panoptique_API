@@ -32,22 +32,22 @@ class ShiftFixture extends Fixture implements DependentFixtureInterface
             }
             
             // Créer 3 shifts par mission (matin, après-midi, nuit)
-            for ($i = 0; $i < 3; $i++) {
+            for ($i = 0; $i < 6; $i++) {
                 $shift = new Shift();
                 
                 // Définir les heures de début/fin en fonction du créneau
-                if ($i === 0) { // Matin (6h-14h)
+                if ($i === 1) { // Matin (6h-14h)
                     $start = (clone $missionStart)->setTime(6, 0);
                     $end = (clone $missionStart)->setTime(14, 0);
-                    $activitie = $activities[$i];
-                } elseif ($i === 1) { // Après-midi (14h-22h)
+                    $activitie = $activities[0];
+                } elseif ($i === 3) { // Après-midi (14h-22h)
                     $start = (clone $missionStart)->setTime(14, 0);
                     $end = (clone $missionStart)->setTime(22, 0);
-                    $activitie = $activities[$i];
+                    $activitie = $activities[1];
                 } else { // Nuit (22h-6h)
                     $start = (clone $missionStart)->setTime(22, 0);
                     $end = (clone $missionStart)->add(new \DateInterval('P1D'))->setTime(6, 0);
-                    $activitie = $activities[$i];
+                    $activitie = $activities[2];
                 }
                 
                 // Vérifier que le shift ne dépasse pas la fin de la mission
