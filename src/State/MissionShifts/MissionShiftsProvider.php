@@ -18,35 +18,44 @@ class MissionShiftsProvider implements ProviderInterface
 
     public function provide(Operation $operation, array $uriVariables = [], array $context = []): object|array|null
     {
-        
-        $missions = $this->missionRepository->findMissionShifts();
+        $missions = $this->missionRepository->findMissionsWithShifts();
         
         return array_map(function ($mission) {
-            $shiftDto = [];
+            $shiftsByActivity = [
+                'connexion' => [],
+                'surveillance' => [],
+                'deconnexion' => []
+            ];
+            
             foreach ($mission->getShifts() as $shift) {
                 $user = $shift->getUser();
                 $authUser = $user->getAuthUser();
-                $shiftDto[] = new ShiftDto(
+                
+                $shiftDto = new ShiftDto(
                     $shift->getId(),
                     $shift->getStart(),
                     $shift->getEnd(),
                     $shift->getActivity(),
                     $user->getFirstName()." ".$user->getLastName(),
-                    $authUser->getRoles(),
+                    $authUser->getRoles()
                 );
+                
+                $shiftsByActivity[$shift->getActivity()][] = $shiftDto;
             }
+            
             $customer = $mission->getCustomer();
             $team = $mission->getTeam();
-            $location = $customer->getLocation();
+            $location = $customer ? $customer->getLocation() : null;
+            
             return new MissionShiftsDto(
                 $mission->getId(),
                 $mission->getStart(),
                 $mission->getEnd(),
-                $location->getName(),
-                $team->getName(),
+                $location ? $location->getName() : null,
+                $team ? $team->getName() : null,
                 $mission->getCreatedAt(),
                 $mission->getUpdatedAt(),
-                $shiftDto
+                $shiftsByActivity
             );
         }, $missions);
     }

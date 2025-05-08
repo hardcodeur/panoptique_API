@@ -16,15 +16,6 @@ class MissionRepository extends ServiceEntityRepository
         parent::__construct($registry, Mission::class);
     }
 
-    public function findMissionShifts(): array
-    {
-        return $this->createQueryBuilder('t')
-            ->leftJoin('t.shifts', 'u')
-            ->addSelect('u')
-            ->getQuery()
-            ->getResult();
-    }
-
     public function findMissions(): array
     {
         $todayStart = new \DateTimeImmutable('today');
@@ -48,6 +39,32 @@ class MissionRepository extends ServiceEntityRepository
             ->getQuery()
             ->getResult();
     }
+
+
+    public function findMissionsWithShifts()
+{
+    $todayStart = new \DateTimeImmutable('today');
+
+    return $this->createQueryBuilder('m')
+        ->leftJoin('m.shifts', 's')
+        ->addSelect('s')
+        ->leftJoin('s.user', 'u')
+        ->addSelect('u')
+        ->leftJoin('u.authUser', 'au')
+        ->addSelect('au')
+        ->leftJoin('m.customer', 'c')
+        ->addSelect('c')
+        ->leftJoin('c.location', 'l')
+        ->addSelect('l')
+        ->leftJoin('m.team', 't')
+        ->addSelect('t')
+        ->where('m.start >= :todayStart')
+        ->setParameter('todayStart', $todayStart)
+        ->orderBy('m.start', 'ASC')
+        ->addOrderBy('s.start', 'ASC')
+        ->getQuery()
+        ->getResult();
+}
 
 //    /**
 //     * @return Mission[] Returns an array of Mission objects

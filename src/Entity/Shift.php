@@ -31,11 +31,11 @@ class Shift
 
     #[ORM\ManyToOne]
     #[ORM\JoinColumn(nullable: false)]
-    private ?user $user = null;
+    private ?User $user = null;
 
     #[ORM\ManyToOne(inversedBy: 'shifts')]
     #[ORM\JoinColumn(nullable: false)]
-    private ?mission $mission = null;
+    private ?Mission $mission = null;
 
     private const ACTIVITY = [
         "co"=>"connexion",
