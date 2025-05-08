@@ -17,7 +17,7 @@ class MissionListProvider implements ProviderInterface
 
     public function provide(Operation $operation, array $uriVariables = [], array $context = []): object|array|null
     {
-        $missions = $this->missionRepository->findAll();
+        $missions = $this->missionRepository->findMissions();
         
         return array_map(function ($mission) {                                        
             return new MissionListDto(

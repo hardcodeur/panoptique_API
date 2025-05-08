@@ -66,7 +66,7 @@ class UserListDto
     public function getStatus(): ?string
     {   
         
-        return ($this->status) ? "Disponible" : "Indisponible" ;
+        return $this->status;
     }
         
     public function getCreatedAt(): ?\DateTimeImmutable

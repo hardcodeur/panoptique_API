@@ -25,6 +25,30 @@ class MissionRepository extends ServiceEntityRepository
             ->getResult();
     }
 
+    public function findMissions(): array
+    {
+        $todayStart = new \DateTimeImmutable('today');
+
+        return $this->createQueryBuilder('m')
+            ->where('m.start >= :todayStart')
+            ->setParameter('todayStart', $todayStart)
+            ->orderBy('m.start', 'ASC')
+            ->getQuery()
+            ->getResult();
+    }
+
+    public function findPastMissions(): array
+    {
+        $todayStart = new \DateTimeImmutable('today');
+    
+        return $this->createQueryBuilder('m')
+            ->where('m.start < :todayStart')
+            ->setParameter('todayStart', $todayStart)
+            ->orderBy('m.start', 'DESC')
+            ->getQuery()
+            ->getResult();
+    }
+
 //    /**
 //     * @return Mission[] Returns an array of Mission objects
 //     */
