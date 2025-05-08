@@ -4,9 +4,7 @@ namespace App\State\MissionShifts;
 
 use ApiPlatform\Metadata\Operation;
 use ApiPlatform\State\ProviderInterface;
-
 use App\Dto\MissionShifts\MissionShiftsDto;
-use App\Dto\Shift\ShiftDto;
 use App\Repository\MissionRepository;
 
 class MissionShiftsProvider implements ProviderInterface
@@ -21,38 +19,59 @@ class MissionShiftsProvider implements ProviderInterface
         $missions = $this->missionRepository->findMissionsWithShifts();
         
         return array_map(function ($mission) {
+            // Initialiser la structure des shifts par activité
             $shiftsByActivity = [
-                'connexion' => [],
-                'surveillance' => [],
-                'deconnexion' => []
+                'connexion' => [
+                    'startHourFormat' => '',
+                    'endHourFormat' => '',
+                    'users' => []
+                ],
+                'surveillance' => [
+                    'startHourFormat' => '',
+                    'endHourFormat' => '',
+                    'users' => []
+                ],
+                'deconnexion' => [
+                    'startHourFormat' => '',
+                    'endHourFormat' => '',
+                    'users' => []
+                ]
             ];
             
+            // Remplir les données
             foreach ($mission->getShifts() as $shift) {
                 $user = $shift->getUser();
                 $authUser = $user->getAuthUser();
                 
-                $shiftDto = new ShiftDto(
-                    $shift->getId(),
-                    $shift->getStart(),
-                    $shift->getEnd(),
-                    $shift->getActivity(),
-                    $user->getFirstName()." ".$user->getLastName(),
-                    $authUser->getRoles()
-                );
+                $activity = $shift->getActivity();
                 
-                $shiftsByActivity[$shift->getActivity()][] = $shiftDto;
+                // Formater les heures (ex: "08h00")
+                $startHour = $shift->getStart()->format('H\hi');
+                $endHour = $shift->getEnd()->format('H\hi');
+                
+                // Stocker les heures pour cette activité
+                $shiftsByActivity[$activity]['startHourFormat'] = $startHour;
+                $shiftsByActivity[$activity]['endHourFormat'] = $endHour;
+                
+                // Ajouter l'utilisateur
+                $role = $authUser->getRoles();
+                $shiftsByActivity[$activity]['users'][] = [
+                    'id' => $shift->getId(),
+                    'userFullname' => $user->getFirstName().' '.$user->getLastName(),
+                    'userRole' => strtolower(str_replace('ROLE_', '', $role[0]))
+                ];
             }
             
             $customer = $mission->getCustomer();
             $team = $mission->getTeam();
-            $location = $customer ? $customer->getLocation() : null;
+            $location = $customer->getLocation();
             
             return new MissionShiftsDto(
                 $mission->getId(),
                 $mission->getStart(),
                 $mission->getEnd(),
-                $location ? $location->getName() : null,
-                $team ? $team->getName() : null,
+                $location->getName(),
+                $team->getName(),
                 $mission->getCreatedAt(),
                 $mission->getUpdatedAt(),
                 $shiftsByActivity

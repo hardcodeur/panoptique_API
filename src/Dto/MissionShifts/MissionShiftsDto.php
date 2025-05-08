@@ -37,14 +37,6 @@ class MissionShiftsDto
         private ?string $teamName = null,
         private ?\DateTimeImmutable $createdAt = null,
         private ?\DateTimeImmutable $updatedAt = null,
-        /** 
-         * @var array<string, ShiftDto[]> 
-         * @example [
-         *     'connexion' => [ShiftDto, ShiftDto],
-         *     'surveillance' => [ShiftDto],
-         *     'deconnexion' => [ShiftDto, ShiftDto]
-         * ]
-         */
         private array $shifts = [],
     ) {
     }
