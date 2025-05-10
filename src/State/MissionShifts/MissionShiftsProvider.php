@@ -9,6 +9,25 @@ use App\Repository\MissionRepository;
 
 class MissionShiftsProvider implements ProviderInterface
 {   
+
+    public ?\IntlDateFormatter $dateFormatter = null;
+
+    private function getDateFormatter(): \IntlDateFormatter
+    {
+        if ($this->dateFormatter === null) {
+            $this->dateFormatter = new \IntlDateFormatter(
+                'fr_FR', 
+                \IntlDateFormatter::FULL, 
+                \IntlDateFormatter::NONE,
+                'Europe/Paris',
+                \IntlDateFormatter::GREGORIAN,
+                'EEEE d MMMM' // format "lundi 6 mai"
+            );
+        }
+        
+        return $this->dateFormatter;
+    }
+
     public function __construct(
         private MissionRepository $missionRepository
     ) {
@@ -33,11 +52,13 @@ class MissionShiftsProvider implements ProviderInterface
                 
                 $timeKey = $shift->getStart()->format('U').'-'.$shift->getEnd()->format('U');
                 $activity = $shift->getActivity();
+                $date = $shift->getStart()->setTimezone(new \DateTimeZone('Europe/Paris'));
                 
                 if (!isset($shiftsByActivityAndTime[$activity][$timeKey])) {
                     $shiftsByActivityAndTime[$activity][$timeKey] = [
                         'start' => $shift->getStart(),
                         'end' => $shift->getEnd(),
+                        'startDateFormat' => $this->getDateFormatter()->format($date),
                         'startHourFormat' => $shift->getStart()->format('H\hi'),
                         'endHourFormat' => $shift->getEnd()->format('H\hi'),
                         'users' => []
@@ -80,4 +101,5 @@ class MissionShiftsProvider implements ProviderInterface
             );
         }, $missions);
     }
+
 }

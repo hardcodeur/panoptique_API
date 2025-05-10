@@ -16,6 +16,12 @@ use App\Dto\User\UserDetailDto;
 use App\Dto\User\UserCreateDto;
 use App\Dto\User\UserUpdateDto;
 
+use App\Dto\UserShifts\UserShiftsOutputDto;
+use App\State\UserShifts\UserShiftsProvider;
+
+use App\Dto\UserShifts\UseShiftMetricOutputDto;
+use App\State\UserShifts\UseShiftMetricProvider;
+
 #[ApiResource(
     operations: [
         new Metadata\GetCollection(
@@ -36,7 +42,25 @@ use App\Dto\User\UserUpdateDto;
             output: UserDetailDto::class,
             processor: UserProcessor::class,
         ),
-        new Metadata\Delete()
+        new Metadata\Delete(),
+        new Metadata\Get(
+            uriTemplate: '/users/{userId}/current-week-shifts',
+            uriVariables: [
+                'userId' => new Metadata\Link(fromClass: User::class)
+            ],
+            output: UserShiftsOutputDto::class,
+            provider: UserShiftsProvider::class,
+            name: 'user_current_week_shifts'
+        ),
+        new Metadata\Get(
+            uriTemplate: '/users/{userId}/metric-shift',
+            uriVariables: [
+                'userId' => new Metadata\Link(fromClass: User::class)
+            ],
+            output: UseShiftMetricOutputDto::class,
+            provider: UseShiftMetricProvider::class,
+            name: 'user_current_month_shifts_metric'
+        )
     ]
 )]
 #[ORM\Entity(repositoryClass: UserRepository::class)]

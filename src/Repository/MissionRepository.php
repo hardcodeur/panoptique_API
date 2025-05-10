@@ -5,6 +5,7 @@ namespace App\Repository;
 use App\Entity\Mission;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
+use App\Entity\User;
 
 /**
  * @extends ServiceEntityRepository<Mission>
@@ -42,29 +43,29 @@ class MissionRepository extends ServiceEntityRepository
 
 
     public function findMissionsWithShifts()
-{
-    $todayStart = new \DateTimeImmutable('today');
+    {
+        $todayStart = (new \DateTimeImmutable('today'))->setTime(0,0);
 
-    return $this->createQueryBuilder('m')
-        ->leftJoin('m.shifts', 's')
-        ->addSelect('s')
-        ->leftJoin('s.user', 'u')
-        ->addSelect('u')
-        ->leftJoin('u.authUser', 'au')
-        ->addSelect('au')
-        ->leftJoin('m.customer', 'c')
-        ->addSelect('c')
-        ->leftJoin('c.location', 'l')
-        ->addSelect('l')
-        ->leftJoin('m.team', 't')
-        ->addSelect('t')
-        ->where('m.start >= :todayStart')
-        ->setParameter('todayStart', $todayStart)
-        ->orderBy('m.start', 'ASC')
-        ->addOrderBy('s.start', 'ASC')
-        ->getQuery()
-        ->getResult();
-}
+        return $this->createQueryBuilder('m')
+            ->leftJoin('m.shifts', 's')
+            ->addSelect('s')
+            ->leftJoin('s.user', 'u')
+            ->addSelect('u')
+            ->leftJoin('u.authUser', 'au')
+            ->addSelect('au')
+            ->leftJoin('m.customer', 'c')
+            ->addSelect('c')
+            ->leftJoin('c.location', 'l')
+            ->addSelect('l')
+            ->leftJoin('m.team', 't')
+            ->addSelect('t')
+            ->where('m.start >= :todayStart')
+            ->setParameter('todayStart', $todayStart)
+            ->orderBy('m.start', 'ASC')
+            ->addOrderBy('s.start', 'ASC')
+            ->getQuery()
+            ->getResult();
+    }
 
 //    /**
 //     * @return Mission[] Returns an array of Mission objects
