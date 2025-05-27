@@ -17,8 +17,8 @@ class LocationFixture extends Fixture implements DependentFixtureInterface
             ["name"=>"bassens","address"=>"Quai Alfred de Vial, 33530 Bassens","team"=>"bordeaux"],
             ["name"=>"pauillac","address"=>"Trompeloup, 33250 Pauillac","team"=>"bordeaux"],
             ["name"=>"blaye","address"=>"26 Cr Bacalan, 33390 Blaye","team"=>"bordeaux"],
-            ["name"=>"montoir","address"=>"Rue de la Pierre Percée, BP 9, 44550 Montoir-de-Bretagne","team"=>"nante"],
-            ["name"=>"cheviré","address"=>"Quai de Cheviré, 44100 Nantes","team"=>"nante"],
+            ["name"=>"montoir","address"=>"Rue de la Pierre Percée, BP 9, 44550 Montoir-de-Bretagne","team"=>"nantes"],
+            ["name"=>"cheviré","address"=>"Quai de Cheviré, 44100 Nantes","team"=>"nantes"],
             ["name"=>"saint-marc","address"=>"465 rue Alain Colas, ZI Portuaire de Saint-Marc, 29200 Brest","team"=>"brest"],
             ["name"=>"brest","address"=>"275 rue Monjaret de Kerjégu, 29200 Brest","team"=>"brest"],
         ];

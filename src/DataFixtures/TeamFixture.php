@@ -8,7 +8,7 @@ use App\Entity\Team;
 
 class TeamFixture extends Fixture
 {   
-    public const TEAMLIST = ["bordeaux","nante","brest"];
+    public const TEAMLIST = ["bordeaux","nantes","brest"];
 
     public function load(ObjectManager $manager): void
     {   

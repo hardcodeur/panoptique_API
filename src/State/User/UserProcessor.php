@@ -38,12 +38,10 @@ class UserProcessor implements ProcessorInterface
 
     private function handleCreate(UserCreateDto $data): UserDetailDto
     {
-        // Création d'un nouvel utilisateur
         $user = new User();
         $user->setFirstName($data->getFirstName());
         $user->setLastName($data->getLastName());
 
-        // Création d'un nouvel utilisateur d'authentification
         $authUser = new AuthUser();
         $authUser->setEmail($data->getEmail());
 
@@ -51,13 +49,10 @@ class UserProcessor implements ProcessorInterface
         $hashedPassword = $this->hashPassword($data->getPassword());
         $authUser->setPassword($hashedPassword);
 
-        // Attribution des rôles
         $authUser->setRoles($data->getRole());
 
-        // Liaison entre User et AuthUser
         $user->setAuthUser($authUser);
 
-        // Persistance en base de données
         $this->entityManager->persist($user);
         $this->entityManager->persist($authUser);
         $this->entityManager->flush();
