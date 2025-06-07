@@ -14,32 +14,27 @@ class LoginSubscriber implements EventSubscriberInterface
     {
     }
 
-    public static function getSubscribedEvents(): array
-    {
-        return [
-            Events::AUTHENTICATION_SUCCESS => 'onAuthenticationSuccess',
-        ];
-    }
-
     public function onAuthenticationSuccess(AuthenticationSuccessEvent $event): void
     {   
         $data = $event->getData();
         $authUser = $event->getUser();
         
-        // Vérifie si l'utilisateur est bien une instance de UserAuth
         if (!$authUser instanceof AuthUser) {
             return;
         }
 
-        // Met à jour la date de dernière connexion
+        // Mise à jour
         $authUser->setLastLogin(new \DateTimeImmutable());
         $this->em->persist($authUser);
         $this->em->flush();
 
-        // Ajoute l'ID utilisateur à la réponse
-        $data['userId'] = $authUser->getUser()->getId();
-        $roles=$authUser->getRoles();
-        $data["userRole"] = strtolower(str_replace('ROLE_','', $roles[0]));
         $event->setData($data);
+    }
+
+    public static function getSubscribedEvents(): array
+    {
+        return [
+            Events::AUTHENTICATION_SUCCESS => 'onAuthenticationSuccess',
+        ];
     }
 }
