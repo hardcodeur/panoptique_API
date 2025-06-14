@@ -2,7 +2,7 @@ gesdinet_jwt_refresh_token:
     refresh_token_class: App\Entity\RefreshToken
     user_provider: security.user.provider.concrete.jwt_user_provider # user_provider définie dans lexik_jwt_authentication.yaml
     firewall: api
-    ttl: 28 800  # 8 heures
+    ttl: 36000  # 10 heures
     token_parameter_name: refresh_token
     user_identity_field: email
     return_expiration: false

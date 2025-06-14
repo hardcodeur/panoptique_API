@@ -2,10 +2,10 @@ framework:
     rate_limiter:
         login:
             policy: 'fixed_window' # Protection Brut force 
-            limit: 5              # 5 tentatives max
-            interval: '5 minutes'  # Réinitialisation toutes minutes
+            limit: 6              # 6 tentatives 
+            interval: '15 minutes'  # Réinitialisation toutes les 15 minutes
         
         refresh_token:
-            policy: 'token_bucket'
-            limit: 30             # 10 refresh max
-            rate: { interval: '1 hour', amount: 10 }  # 10 requêtes/heure max
+            policy: 'sliding_window'
+            limit: 20             # 20 refresh
+            interval: '10 hours'  
