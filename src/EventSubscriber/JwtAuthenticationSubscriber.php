@@ -11,13 +11,18 @@ use Lexik\Bundle\JWTAuthenticationBundle\Event\AuthenticationFailureEvent;
 use Symfony\Component\RateLimiter\Exception\RateLimitExceededException;
 use Symfony\Component\RateLimiter\RateLimiterFactory;
 
+use Psr\Log\LoggerInterface;
+use Symfony\Component\HttpFoundation\RequestStack;
+
 
 class JwtAuthenticationSubscriber implements EventSubscriberInterface
 {   
 
     public function __construct(
         private RateLimiterFactory $loginLimiter,
-        private EntityManagerInterface $em
+        private EntityManagerInterface $em,
+        private LoggerInterface $logger,
+        private RequestStack $requestStack
     ) {}
 
     public static function getSubscribedEvents(): array
@@ -28,7 +33,7 @@ class JwtAuthenticationSubscriber implements EventSubscriberInterface
         ];
     }
 
-    public function onAuthenticationSuccess(AuthenticationSuccessEvent $event): void
+    public function onAuthenticationSuccess(AuthenticationSuccessEvent $event, ): void
     {   
         // Update last login field
         $data = $event->getData();
@@ -38,15 +43,43 @@ class JwtAuthenticationSubscriber implements EventSubscriberInterface
             return;
         }
 
-        $authUser->setLastLogin(new \DateTimeImmutable());
+        $currentDate = new \DateTimeImmutable();
+        $authUser->setLastLogin($currentDate);
         $this->em->persist($authUser);
         $this->em->flush();
+
+        $request = $this->requestStack->getCurrentRequest();
+
+        $this->logger->info("User logged",[
+            "id"=> $authUser->getId(),
+            'metadata' =>[
+                'ip' => $request?->getClientIp() ?? 'unknown',
+                'user_agent' => $request?->headers->get('User-Agent') ?? 'unknown',
+            ],
+            'timestamp' => $currentDate->format('c')
+        ]);
 
         $event->setData($data);
     }
 
     public function onAuthenticationFailure(AuthenticationFailureEvent $event): void
     {   
+
+        $currentDate = new \DateTimeImmutable();
+        $request = $this->requestStack->getCurrentRequest();
+
+        $requestData = json_decode($request?->getContent() ?? '', true);
+        $email = $requestData['email'] ?? 'unknown';
+
+        $this->logger->warning("Échec de connexion", [
+            "attempt_email" => $email,
+            'metadata' => [
+                'ip' => $request?->getClientIp() ?? 'unknown',
+                'user_agent' => $request?->headers->get('User-Agent') ?? 'unknown',
+            ],
+            'timestamp' => $currentDate->format('c')
+        ]);
+
         // Rate Limiter (protection brut force)
         $request = $event->getRequest();
         $limiter = $this->loginLimiter->create($request->getClientIp());

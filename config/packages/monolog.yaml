@@ -6,10 +6,13 @@ when@dev:
     monolog:
         handlers:
             main:
-                type: stream
+                type: rotating_file
                 path: "%kernel.logs_dir%/%kernel.environment%.log"
                 level: debug
+                max_files: 7        # Garde 7 jours d'historique
                 channels: ["!event"]
+                formatter: monolog.formatter.line_formatter
+                date_format: "Y-m-d H:i:s"
             # uncomment to get logging in your browser
             # you may have to allow bigger header sizes in your Web server configuration
             #firephp:
