@@ -71,7 +71,7 @@ class JwtAuthenticationSubscriber implements EventSubscriberInterface
         $requestData = json_decode($request?->getContent() ?? '', true);
         $email = $requestData['email'] ?? 'unknown';
 
-        $this->logger->warning("Échec de connexion", [
+        $this->logger->warning("User logged fail", [
             "attempt_email" => $email,
             'metadata' => [
                 'ip' => $request?->getClientIp() ?? 'unknown',
