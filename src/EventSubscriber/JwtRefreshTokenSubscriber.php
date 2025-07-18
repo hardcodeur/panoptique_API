@@ -1,14 +1,19 @@
 <?php 
 
+namespace App\EventSubscriber; 
+
+namespace App\EventSubscriber;
+
+use Symfony\Component\DependencyInjection\Attribute\Autowire;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\HttpKernel\Event\ControllerEvent;
 use Symfony\Component\RateLimiter\RateLimiterFactory;
 use Symfony\Component\HttpKernel\Exception\TooManyRequestsHttpException;
 
-class JwtRefreshTokenrSubscriber implements EventSubscriberInterface
+class JwtRefreshTokenSubscriber implements EventSubscriberInterface
 {
     public function __construct(
-        private RateLimiterFactory $refreshLimiter
+        #[Autowire(service: 'limiter.refresh_token')] private RateLimiterFactory $refreshLimiter
     ) {}
 
     public function onKernelController(ControllerEvent $event): void
@@ -18,6 +23,7 @@ class JwtRefreshTokenrSubscriber implements EventSubscriberInterface
             return;
         }
 
+        // Rate limiter
         $limiter = $this->refreshLimiter->create($request->getClientIp());
         if (false === $limiter->consume()->isAccepted()) {
             throw new TooManyRequestsHttpException();

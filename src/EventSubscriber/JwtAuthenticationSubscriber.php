@@ -50,6 +50,7 @@ class JwtAuthenticationSubscriber implements EventSubscriberInterface
 
         $request = $this->requestStack->getCurrentRequest();
 
+        // log
         $this->logger->info("User logged",[
             "id"=> $authUser->getId(),
             'metadata' =>[
@@ -64,12 +65,13 @@ class JwtAuthenticationSubscriber implements EventSubscriberInterface
 
     public function onAuthenticationFailure(AuthenticationFailureEvent $event): void
     {   
-
+        // log
         $currentDate = new \DateTimeImmutable();
         $request = $this->requestStack->getCurrentRequest();
 
         $requestData = json_decode($request?->getContent() ?? '', true);
         $email = $requestData['email'] ?? 'unknown';
+
 
         $this->logger->warning("User logged fail", [
             "attempt_email" => $email,
@@ -80,7 +82,7 @@ class JwtAuthenticationSubscriber implements EventSubscriberInterface
             'timestamp' => $currentDate->format('c')
         ]);
 
-        // Rate Limiter (protection brut force)
+        // Rate Limiter
         $request = $event->getRequest();
         $limiter = $this->loginLimiter->create($request->getClientIp());
 
