@@ -81,18 +81,6 @@ class JwtAuthenticationSubscriber implements EventSubscriberInterface
             ],
             'timestamp' => $currentDate->format('c')
         ]);
-
-        // Rate Limiter
-        $request = $event->getRequest();
-        $limiter = $this->loginLimiter->create($request->getClientIp());
-
-        try {
-            $limiter->consume()->ensureAccepted();
-        } catch (RateLimitExceededException $e) {
-            $event->getResponse()?->setContent(json_encode([
-                'error' => 'Trop de tentatives de connexion. Réessayez dans 5 minutes.'
-            ]));
-        }
     }
 
 }
