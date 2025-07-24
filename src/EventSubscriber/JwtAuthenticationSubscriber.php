@@ -3,16 +3,21 @@
 namespace App\EventSubscriber;
 
 use App\Entity\AuthUser;
+use App\Entity\User;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Doctrine\ORM\EntityManagerInterface;
 use Lexik\Bundle\JWTAuthenticationBundle\Event\AuthenticationSuccessEvent;
 
+use Lexik\Bundle\JWTAuthenticationBundle\Event\JWTCreatedEvent;
+use Lexik\Bundle\JWTAuthenticationBundle\Events;
+
 use Lexik\Bundle\JWTAuthenticationBundle\Event\AuthenticationFailureEvent;
-use Symfony\Component\RateLimiter\Exception\RateLimitExceededException;
 use Symfony\Component\RateLimiter\RateLimiterFactory;
 
 use Psr\Log\LoggerInterface;
 use Symfony\Component\HttpFoundation\RequestStack;
+
+
 
 
 class JwtAuthenticationSubscriber implements EventSubscriberInterface
@@ -28,6 +33,7 @@ class JwtAuthenticationSubscriber implements EventSubscriberInterface
     public static function getSubscribedEvents(): array
     {
         return [
+            'lexik_jwt_authentication.on_jwt_created' => 'onJwtCreated',
             'lexik_jwt_authentication.on_authentication_success' => 'onAuthenticationSuccess',
             'lexik_jwt_authentication.on_authentication_failure' => 'onAuthenticationFailure',
         ];
@@ -44,6 +50,7 @@ class JwtAuthenticationSubscriber implements EventSubscriberInterface
         }
 
         $currentDate = new \DateTimeImmutable();
+
         $authUser->setLastLogin($currentDate);
         $this->em->persist($authUser);
         $this->em->flush();
@@ -83,4 +90,26 @@ class JwtAuthenticationSubscriber implements EventSubscriberInterface
         ]);
     }
 
+    public function onJwtCreated(JWTCreatedEvent $event): void
+    {
+        $payload = $event->getData();
+        $authUser = $event->getUser();
+
+        if (!$authUser instanceof AuthUser) {
+            return;
+        }
+
+        $userProfile = $authUser->getUser();
+
+        if (!$userProfile instanceof User) {
+            return;
+        }
+
+        $payload['id'] = $userProfile->getId();
+        $payload['userName'] = $userProfile->getFirstName()." ".$userProfile->getLastName();
+        $payload['role'] = $payload['roles'][0];
+        unset($payload['roles'],);
+
+        $event->setData($payload);
+    }
 }

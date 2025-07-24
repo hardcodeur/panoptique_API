@@ -58,6 +58,7 @@ class AuthenticationTest extends ApiTestCase
         $authUser->setEmail($this->testEmail);
         $authUser->setPassword($this->passwordHasher->hashPassword($authUser, $this->testPassword));
         $authUser->setUser($user);
+        $authUser->setRoles("agent");
 
         $this->em->persist($authUser);
         $this->em->flush();
@@ -182,10 +183,42 @@ class AuthenticationTest extends ApiTestCase
         $this->assertNull($refreshToken, 'Refresh token should be deleted from the database after logout.');
     }
 
+        public function testJwtPayloadContainsCustomData(): void
+    {
+        $response = $this->client->request('POST', '/api/login', [
+            'json' => [
+                'email' => $this->testEmail,
+                'password' => $this->testPassword,
+            ],
+        ]);
+
+        $responseData = $response->toArray();
+        $token = $responseData['token'];
+
+        // decode payload
+        $tokenParts = explode('.', $token);
+        $payload = json_decode(base64_decode($tokenParts[1]), true);
+
+        // check if isset custom data
+        $this->assertArrayHasKey('id', $payload);
+        $this->assertArrayHasKey('userEmail', $payload);
+        $this->assertArrayHasKey('userName', $payload);
+        $this->assertArrayHasKey('id', $payload);
+        $this->assertArrayHasKey('role', $payload);
+
+        // check values
+        $this->assertEquals($this->testEmail, $payload['userEmail']);
+        $this->assertEquals('Bouh Test', $payload['userName']);
+        $this->assertEquals('ROLE_USER', $payload['role']);
+        $this->assertEquals(1, $payload['id']);
+    }
+
 
     protected function tearDown(): void
     {
         parent::tearDown();
         $this->em->close();
     }
+
+
 }

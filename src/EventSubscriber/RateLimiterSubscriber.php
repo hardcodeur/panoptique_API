@@ -29,7 +29,7 @@ class RateLimiterSubscriber implements EventSubscriberInterface
         $path = $request->getPathInfo();
 
         $limiterMapping = [
-            '/api/login' => $this->loginLimiter,
+            // '/api/login' => $this->loginLimiter,
             '/api/token/refresh' => $this->refreshLimiter,
         ];
 
