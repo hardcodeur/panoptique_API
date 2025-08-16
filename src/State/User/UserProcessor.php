@@ -9,6 +9,7 @@ use App\Dto\User\UserUpdateDto;
 use App\Dto\User\UserDetailDto;
 use App\Entity\User;
 use App\Entity\AuthUser;
+use App\Service\Email\UserEmail;
 use App\Repository\TeamRepository;
 use App\Repository\AuthUserRepository;
 use App\Repository\UserRepository;
@@ -16,7 +17,6 @@ use App\Service\PasswordGenerator;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpKernel\Exception\HttpException;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
-use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 class UserProcessor implements ProcessorInterface
@@ -28,6 +28,7 @@ class UserProcessor implements ProcessorInterface
         private UserRepository $userRepository,
         private TeamRepository $teamRepository,
         private AuthUserRepository $authUserRepository,
+        private UserEmail $userEmail,
     ) {
     }
 
@@ -66,14 +67,12 @@ class UserProcessor implements ProcessorInterface
 
         // user_auth table
         $authUser = new AuthUser();
-
         $authUser->setEmail($data->getEmail());
-
         // generate rand password and hash this
         $randPass= $this->passwordGenerator->generatePassword(8);
         $hashedPassword = $this->passwordHasher->hashPassword($authUser,$randPass);
         $authUser->setPassword($hashedPassword);
-        
+
         $authUser->setRoles($data->getRole());
 
         $user->setAuthUser($authUser);
@@ -82,6 +81,9 @@ class UserProcessor implements ProcessorInterface
         $this->entityManager->persist($authUser);
         $this->entityManager->flush();
 
+        // send Email
+        $this->userEmail->registreNewUser($data->getEmail(),$randPass);
+        // return new user
         return new UserDetailDto(
             $user->getId(),
             $user->getFirstName(),
@@ -142,25 +144,4 @@ class UserProcessor implements ProcessorInterface
         );
     }
 
-    private function hashPassword(string $plainPassword): string
-    {
-        return $this->passwordHasher->hashPassword(
-            new class($plainPassword) implements PasswordAuthenticatedUserInterface {
-                public function __construct(private string $password)
-                {
-                }
-                
-                public function getPassword(): ?string
-                {
-                    return $this->password;
-                }
-                
-                public function getUserIdentifier(): string
-                {
-                    return '';
-                }
-            },
-            $plainPassword
-        );
-    }
 }
