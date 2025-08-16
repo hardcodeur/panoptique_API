@@ -37,23 +37,22 @@ class UserCreateDto
         )]
         private ?string $email = null,
         
-        #[Assert\NotBlank(message: 'Le mot de passe est obligatoire')]
-        #[Assert\Length(
-            min: 8,
-            minMessage: 'Le mot de passe doit contenir au moins {{ limit }} caractères'
-        )]
         #[Assert\Regex(
-            pattern: '/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*]).*$/',
-            message: 'Le mot de passe doit contenir au moins 1 majuscule, 1 minuscule, 1 chiffre et 1 caractère spécial(!@#$%^&*)'
+            pattern: '/^(?:(?:\+|00)33|0)[1-9]\d{8}$/',
+            message: "Le numéro de téléphone saisi est invalide. Utilisez le format 0123456789 ou +33123456789."
         )]
-        private ?string $password = null,
+        private ?string $phone = null,
+
         
         #[Assert\NotBlank(message: 'Le rôle est obligatoire')]
         #[Assert\Choice(
             choices: ['admin', 'manager', 'team_manager', 'agent'],
             message: 'Le rôle {{ value }} n\'est pas valide. Rôles valides: admin, manager, team_manager, agent'
         )]
-        private ?string $role = null
+        private ?string $role = null,
+
+        #[Assert\NotBlank(message: "L'equipe est obligatoire")]
+        private ?int $team = null
     ) {
     }
 
@@ -71,14 +70,19 @@ class UserCreateDto
     {
         return $this->email;
     }
-    
-    public function getPassword(): ?string
+
+    public function getPhone(): ?string
     {
-        return $this->password;
+        return $this->phone;
     }
-    
+        
     public function getRole(): ?string
     {
         return $this->role;
+    }
+
+    public function getTeam(): ?int
+    {
+        return $this->team;
     }
 }

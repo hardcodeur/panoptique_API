@@ -9,8 +9,12 @@ use App\Dto\User\UserUpdateDto;
 use App\Dto\User\UserDetailDto;
 use App\Entity\User;
 use App\Entity\AuthUser;
+use App\Repository\TeamRepository;
+use App\Repository\AuthUserRepository;
 use App\Repository\UserRepository;
+use App\Service\PasswordGenerator;
 use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Component\HttpKernel\Exception\HttpException;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
@@ -19,8 +23,11 @@ class UserProcessor implements ProcessorInterface
 {
     public function __construct(
         private EntityManagerInterface $entityManager,
+        private PasswordGenerator $passwordGenerator,
         private UserPasswordHasherInterface $passwordHasher,
-        private UserRepository $userRepository
+        private UserRepository $userRepository,
+        private TeamRepository $teamRepository,
+        private AuthUserRepository $authUserRepository,
     ) {
     }
 
@@ -37,18 +44,36 @@ class UserProcessor implements ProcessorInterface
     }
 
     private function handleCreate(UserCreateDto $data): UserDetailDto
-    {
+    {   
+        // check if isset same email in my bdd (email is unique)
+        $userInBdd= $this->authUserRepository->findOneBy(['email' => $data->getEmail()]);
+        if($userInBdd){
+            throw new HttpException(422, sprintf("L'email \"%s\" est déjà utilisé.", $data->getEmail()));
+        }
+
+        // check if isset team un bdd
+        $team = $this->teamRepository->find($data->getTeam());
+        if (!$team) {
+            throw new NotFoundHttpException(sprintf("l'Equipe avec l'ID : %d n'existe pas", $data->getTeam()));
+        }
+
+        // user table
         $user = new User();
         $user->setFirstName($data->getFirstName());
         $user->setLastName($data->getLastName());
+        $user->setPhone($data->getPhone());
+        $user->setTeam($team);
 
+        // user_auth table
         $authUser = new AuthUser();
+
         $authUser->setEmail($data->getEmail());
 
-        // Hashage du mot de passe
-        $hashedPassword = $this->hashPassword($data->getPassword());
+        // generate rand password and hash this
+        $randPass= $this->passwordGenerator->generatePassword(8);
+        $hashedPassword = $this->passwordHasher->hashPassword($authUser,$randPass);
         $authUser->setPassword($hashedPassword);
-
+        
         $authUser->setRoles($data->getRole());
 
         $user->setAuthUser($authUser);
@@ -63,6 +88,8 @@ class UserProcessor implements ProcessorInterface
             $user->getLastName(),
             $user->getCreatedAt(),
             $user->getUpdatedAt(),
+            $user->getPhone(),
+            $team->getName(),
             $authUser ? $authUser->getEmail() : null,
             $authUser ? $authUser->getRoles() : null,
         );
@@ -74,7 +101,7 @@ class UserProcessor implements ProcessorInterface
         $user = $this->userRepository->find($userId);
         
         if (!$user) {
-            throw new NotFoundHttpException(sprintf('Utilisateur avec ID %d introuvable', $userId));
+            throw new NotFoundHttpException(sprintf("L'utilisateur avec l'ID : %d n'existe pas", $userId));
         }
 
         $authUser = $user->getAuthUser();
@@ -93,7 +120,7 @@ class UserProcessor implements ProcessorInterface
         }
 
         if ($data->getPassword() !== null) {
-            $hashedPassword = $this->hashPassword($data->getPassword());
+            $hashedPassword = $this->passwordHasher->hashPassword($authUser,$data->getPassword());
             $authUser->setPassword($hashedPassword);
         }
 
