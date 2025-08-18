@@ -6,9 +6,11 @@ use App\Repository\AuthUserRepository;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
+use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 
 
 #[ORM\Entity(repositoryClass: AuthUserRepository::class)]
+#[UniqueEntity(fields: ['email'], message: 'Cet email est déjà utilisé.')]
 class AuthUser implements UserInterface, PasswordAuthenticatedUserInterface
 {
     #[ORM\Id]

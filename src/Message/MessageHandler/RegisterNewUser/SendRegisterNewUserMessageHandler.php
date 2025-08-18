@@ -1,8 +1,8 @@
 <?php
 
-namespace App\Messenger\MessageHandler\RegisterNewUser;
+namespace App\Message\MessageHandler\RegisterNewUser;
 
-use App\Messenger\Email\UserEmail;
+use App\Message\Email\UserEmail;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\Messenger\Attribute\AsMessageHandler;
 

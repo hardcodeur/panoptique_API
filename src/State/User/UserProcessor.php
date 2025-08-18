@@ -4,20 +4,27 @@ namespace App\State\User;
 
 use ApiPlatform\Metadata\Operation;
 use ApiPlatform\State\ProcessorInterface;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
+use Symfony\Component\Validator\Validator\ValidatorInterface;
+use ApiPlatform\Validator\Exception\ValidationException;
+# Dt0
 use App\Dto\User\UserCreateDto;
 use App\Dto\User\UserUpdateDto;
 use App\Dto\User\UserDetailDto;
+# Entity
 use App\Entity\User;
 use App\Entity\AuthUser;
-use App\Service\Email\UserEmail;
+# Repository
 use App\Repository\TeamRepository;
 use App\Repository\AuthUserRepository;
 use App\Repository\UserRepository;
+# Service
+use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use App\Service\PasswordGenerator;
 use Doctrine\ORM\EntityManagerInterface;
-use Symfony\Component\HttpKernel\Exception\HttpException;
-use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
-use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
+#Email
+use Symfony\Component\Messenger\MessageBusInterface;
+use App\Message\MessageHandler\RegisterNewUser\RegisterNewUserData;
 
 class UserProcessor implements ProcessorInterface
 {
@@ -28,7 +35,8 @@ class UserProcessor implements ProcessorInterface
         private UserRepository $userRepository,
         private TeamRepository $teamRepository,
         private AuthUserRepository $authUserRepository,
-        private UserEmail $userEmail,
+        private MessageBusInterface $messageBus,
+        private ValidatorInterface $validator
     ) {
     }
 
@@ -46,43 +54,37 @@ class UserProcessor implements ProcessorInterface
 
     private function handleCreate(UserCreateDto $data): UserDetailDto
     {   
-        // check if isset same email in my bdd (email is unique)
-        $userInBdd= $this->authUserRepository->findOneBy(['email' => $data->getEmail()]);
-        if($userInBdd){
-            throw new HttpException(422, sprintf("L'email \"%s\" est déjà utilisé.", $data->getEmail()));
-        }
-
-        // check if isset team un bdd
-        $team = $this->teamRepository->find($data->getTeam());
-        if (!$team) {
-            throw new NotFoundHttpException(sprintf("l'Equipe avec l'ID : %d n'existe pas", $data->getTeam()));
-        }
 
         // user table
         $user = new User();
         $user->setFirstName($data->getFirstName());
         $user->setLastName($data->getLastName());
         $user->setPhone($data->getPhone());
-        $user->setTeam($team);
+        $user->setTeam($data->getTeam());
 
         // user_auth table
         $authUser = new AuthUser();
         $authUser->setEmail($data->getEmail());
         // generate rand password and hash this
-        $randPass= $this->passwordGenerator->generatePassword(8);
+        $randPass= $this->passwordGenerator->generatePassword();
         $hashedPassword = $this->passwordHasher->hashPassword($authUser,$randPass);
         $authUser->setPassword($hashedPassword);
-
         $authUser->setRoles($data->getRole());
 
         $user->setAuthUser($authUser);
 
+        # Validation of my entity 
+        $violations = $this->validator->validate($user);
+        if (count($violations) > 0) {
+            throw new ValidationException($violations);
+        }
+
         $this->entityManager->persist($user);
-        $this->entityManager->persist($authUser);
         $this->entityManager->flush();
 
-        // send Email
-        $this->userEmail->registreNewUser($data->getEmail(),$randPass);
+        // asynchrone send Email
+        $this->messageBus->dispatch(new RegisterNewUserData($data->getEmail(), $randPass));
+
         // return new user
         return new UserDetailDto(
             $user->getId(),
@@ -91,9 +93,9 @@ class UserProcessor implements ProcessorInterface
             $user->getCreatedAt(),
             $user->getUpdatedAt(),
             $user->getPhone(),
-            $team->getName(),
-            $authUser ? $authUser->getEmail() : null,
-            $authUser ? $authUser->getRoles() : null,
+            $user->getTeam()->getName(),
+            $user->getAuthUser()->getEmail(),
+            $user->getAuthUser()->getRoles(),
         );
     }
 

@@ -2,8 +2,8 @@
 
 namespace App\Dto\User;
 
-use ApiPlatform\Metadata\ApiProperty;
 use Symfony\Component\Validator\Constraints as Assert;
+use App\Entity\Team;
 
 /**
  * DTO for creating a new User via API
@@ -52,7 +52,7 @@ class UserCreateDto
         private ?string $role = null,
 
         #[Assert\NotBlank(message: "L'equipe est obligatoire")]
-        private ?int $team = null
+        private ?Team $team = null
     ) {
     }
 
@@ -81,7 +81,7 @@ class UserCreateDto
         return $this->role;
     }
 
-    public function getTeam(): ?int
+    public function getTeam(): ?Team
     {
         return $this->team;
     }

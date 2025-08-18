@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Messenger\MessageHandler\RegisterNewUser;
+namespace App\Message\MessageHandler\RegisterNewUser;
 
 final class RegisterNewUserData
 {

@@ -5,6 +5,7 @@ namespace App\Entity;
 use App\Repository\UserRepository;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints as Assert;
 
 use ApiPlatform\Metadata\ApiResource;
 use ApiPlatform\Metadata;
@@ -85,6 +86,7 @@ class User
     private ?\DateTimeImmutable $updated_at = null;
 
     #[ORM\OneToOne(mappedBy: 'user', cascade: ['persist', 'remove'])]
+    #[Assert\Valid]
     private ?AuthUser $authUser = null;
 
     #[ORM\Column(type: Types::SMALLINT, nullable: true)]
