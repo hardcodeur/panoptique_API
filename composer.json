@@ -38,7 +38,8 @@
         "symfony/serializer": "6.4.*",
         "symfony/twig-bundle": "6.4.*",
         "symfony/validator": "6.4.*",
-        "symfony/yaml": "6.4.*"
+        "symfony/yaml": "6.4.*",
+        "api-platform/core": "^4.0.22"
     },
     "config": {
         "allow-plugins": {
@@ -89,7 +90,6 @@
         }
     },
     "require-dev": {
-        "api-platform/core": "^4.0.22",
         "dama/doctrine-test-bundle": "^8.3",
         "doctrine/doctrine-fixtures-bundle": "^4.1",
         "phpunit/phpunit": "^12.2",

@@ -32,6 +32,10 @@ class UserDto
     public function getRole(): ?string
     {   
         $role = $this->role[0];
-        return strtolower(str_replace('ROLE_', '', $role));
+        $roleNormelize = strtolower(str_replace('ROLE_','', $role));
+        if($roleNormelize === "user" ){
+            return "agent";
+        }
+        return $roleNormelize;
     }
 }

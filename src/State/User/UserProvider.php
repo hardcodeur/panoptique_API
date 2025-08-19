@@ -30,6 +30,7 @@ class UserProvider implements ProviderInterface
                 $user->getFirstName(),
                 $user->getLastName(),
                 $user->getPhone(),
+                $user->getTeam()?->getId(),
                 $user->getTeam()?->getName(),
                 $user->getStatus(),
                 $user->getCreatedAt(),

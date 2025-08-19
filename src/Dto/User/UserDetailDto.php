@@ -82,7 +82,11 @@ class UserDetailDto
     public function getRoles(): string
     {
         $role = $this->roles[0];
-        return strtolower(str_replace('ROLE_','', $role));
+        $roleNormelize = strtolower(str_replace('ROLE_','', $role));
+        if($roleNormelize === "user" ){
+            return "agent";
+        }
+        return $roleNormelize;
     }
 
     public function getTeam(): ?string

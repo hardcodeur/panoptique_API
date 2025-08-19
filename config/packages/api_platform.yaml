@@ -5,6 +5,12 @@ api_platform:
         json:
             mime_types:
                 - application/json
+    
+    error_formats:
+        json:
+            mime_types:
+                - application/json
+
     defaults:
         stateless: true
         cache_headers:

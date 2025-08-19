@@ -60,6 +60,7 @@ class UserProcessor implements ProcessorInterface
         $user->setFirstName($data->getFirstName());
         $user->setLastName($data->getLastName());
         $user->setPhone($data->getPhone());
+        $user->setStatus(1);
         $user->setTeam($data->getTeam());
 
         // user_auth table
@@ -101,7 +102,7 @@ class UserProcessor implements ProcessorInterface
 
     private function handleUpdate(int $userId,UserUpdateDto $data): UserDetailDto
     {
-        // Récupération de l'utilisateur existant
+        
         $user = $this->userRepository->find($userId);
         
         if (!$user) {
@@ -110,7 +111,7 @@ class UserProcessor implements ProcessorInterface
 
         $authUser = $user->getAuthUser();
 
-        // Mise à jour des champs si fournis
+        // data optional
         if ($data->getFirstName() !== null) {
             $user->setFirstName($data->getFirstName());
         }
@@ -123,26 +124,31 @@ class UserProcessor implements ProcessorInterface
             $authUser->setEmail($data->getEmail());
         }
 
-        if ($data->getPassword() !== null) {
-            $hashedPassword = $this->passwordHasher->hashPassword($authUser,$data->getPassword());
-            $authUser->setPassword($hashedPassword);
+        if ($data->getPhone() !== null) {
+            $user->setPhone($data->getPhone());
         }
-
+        
         if ($data->getRole() !== null) {
             $authUser->setRoles($data->getRole());
         }
 
-        // Persistance des modifications
+        if ($data->getTeam() !== null) {
+            $user->setTeam($data->getTeam());
+        }
+        
         $this->entityManager->flush();
 
+        // return new user
         return new UserDetailDto(
             $user->getId(),
             $user->getFirstName(),
             $user->getLastName(),
             $user->getCreatedAt(),
             $user->getUpdatedAt(),
-            $authUser ? $authUser->getEmail() : null,
-            $authUser ? $authUser->getRoles() : null,
+            $user->getPhone(),
+            $user->getTeam()->getName(),
+            $user->getAuthUser()->getEmail(),
+            $user->getAuthUser()->getRoles(),
         );
     }
 

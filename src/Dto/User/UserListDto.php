@@ -20,7 +20,9 @@ class UserListDto
 
         private ?string $phone = null,
 
-        private ?string $team = null,
+        private ?int $teamId = null,
+
+        private ?string $teamName = null,
 
         private ?int $status = null,
         
@@ -58,9 +60,14 @@ class UserListDto
         return $this->phone;
     }
 
-    public function getTeam(): ?string
+    public function getTeamId(): ?int
     {
-        return $this->team;
+        return $this->teamId;
+    }
+
+    public function getTeamName(): ?string
+    {
+        return $this->teamName;
     }
 
     public function getStatus(): ?string
@@ -82,7 +89,11 @@ class UserListDto
     public function getRole(): ?string
     {   
         $role = $this->role[0];
-        return strtolower(str_replace('ROLE_','', $role));
+        $roleNormelize = strtolower(str_replace('ROLE_','', $role));
+        if($roleNormelize === "user" ){
+            return "agent";
+        }
+        return $roleNormelize;    
     }
 
 

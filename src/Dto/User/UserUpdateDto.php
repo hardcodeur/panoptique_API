@@ -4,6 +4,7 @@ namespace App\Dto\User;
 
 use ApiPlatform\Metadata\ApiProperty;
 use Symfony\Component\Validator\Constraints as Assert;
+use App\Entity\Team;
 
 /**
  * DTO for updating an existing User via API
@@ -11,6 +12,7 @@ use Symfony\Component\Validator\Constraints as Assert;
 class UserUpdateDto
 {
     public function __construct(
+
         #[ApiProperty(identifier: true)]
         private ?int $id = null,
         
@@ -31,23 +33,26 @@ class UserUpdateDto
         private ?string $lastName = null,
         
         #[Assert\Email(message: 'L\'email {{ value }} n\'est pas valide')]
+        #[Assert\Regex(
+            pattern: '/^[a-zA-Z0-9._-]+@sgs\.(com|fr)$/',
+            message: "L'email doit être une adresse sgs"
+        )]
         private ?string $email = null,
         
-        #[Assert\Length(
-            min: 8,
-            minMessage: 'Le mot de passe doit contenir au moins {{ limit }} caractères'
-        )]
         #[Assert\Regex(
-            pattern: '/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).+$/',
-            message: 'Le mot de passe doit contenir au moins une minuscule, une majuscule et un chiffre'
+            pattern: '/^(?:(?:\+|00)33|0)[1-9]\d{8}$/',
+            message: "Le numéro de téléphone saisi est invalide. Utilisez le format 0123456789 ou +33123456789."
         )]
-        private ?string $password = null,
+        private ?string $phone = null,
+
         
         #[Assert\Choice(
             choices: ['admin', 'manager', 'team_manager', 'agent'],
             message: 'Le rôle {{ value }} n\'est pas valide. Rôles valides: admin, manager, team_manager, agent'
         )]
-        private ?string $role = null
+        private ?string $role = null,
+
+        private ?Team $team = null
     ) {
     }
 
@@ -56,7 +61,7 @@ class UserUpdateDto
         return $this->id;
     }
 
-    public function getFirstName(): ?string
+   public function getFirstName(): ?string
     {
         return $this->firstName;
     }
@@ -70,14 +75,19 @@ class UserUpdateDto
     {
         return $this->email;
     }
-    
-    public function getPassword(): ?string
+
+    public function getPhone(): ?string
     {
-        return $this->password;
+        return $this->phone;
     }
-    
+        
     public function getRole(): ?string
     {
         return $this->role;
+    }
+
+    public function getTeam(): ?Team
+    {
+        return $this->team;
     }
 }

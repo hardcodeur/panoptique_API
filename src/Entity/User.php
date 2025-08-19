@@ -38,7 +38,7 @@ use App\State\UserShifts\UseShiftMetricProvider;
             output: UserDetailDto::class,
             processor: UserProcessor::class,
         ),
-        new Metadata\Put(
+        new Metadata\Patch(
             input: UserUpdateDto::class,
             output: UserDetailDto::class,
             processor: UserProcessor::class,

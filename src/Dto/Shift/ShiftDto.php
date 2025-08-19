@@ -62,6 +62,10 @@ class ShiftDto
     public function getUserRole(): ?string
     {   
         $role = $this->userRole[0];
-        return strtolower(str_replace('ROLE_', '', $role));
+        $roleNormelize = strtolower(str_replace('ROLE_','', $role));
+        if($roleNormelize === "user" ){
+            return "agent";
+        }
+        return $roleNormelize;   
     }
 }
