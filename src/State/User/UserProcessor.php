@@ -11,6 +11,7 @@ use ApiPlatform\Validator\Exception\ValidationException;
 use App\Dto\User\UserCreateDto;
 use App\Dto\User\UserUpdateDto;
 use App\Dto\User\UserDetailDto;
+use App\Dto\User\UserDetailUpdateDto;
 # Entity
 use App\Entity\User;
 use App\Entity\AuthUser;
@@ -100,7 +101,7 @@ class UserProcessor implements ProcessorInterface
         );
     }
 
-    private function handleUpdate(int $userId,UserUpdateDto $data): UserDetailDto
+    private function handleUpdate(int $userId,UserUpdateDto $data): UserDetailUpdateDto
     {
         
         $user = $this->userRepository->find($userId);
@@ -139,16 +140,16 @@ class UserProcessor implements ProcessorInterface
         $this->entityManager->flush();
 
         // return new user
-        return new UserDetailDto(
+        return new UserDetailUpdateDto(
             $user->getId(),
             $user->getFirstName(),
             $user->getLastName(),
-            $user->getCreatedAt(),
-            $user->getUpdatedAt(),
             $user->getPhone(),
+            $user->getTeam()->getId(),
             $user->getTeam()->getName(),
+            $user->getStatus(),
             $user->getAuthUser()->getEmail(),
-            $user->getAuthUser()->getRoles(),
+            $user->getAuthUser()->getRoles()
         );
     }
 

@@ -16,6 +16,7 @@ use App\Dto\User\UserListDto;
 use App\Dto\User\UserDetailDto;
 use App\Dto\User\UserCreateDto;
 use App\Dto\User\UserUpdateDto;
+use App\Dto\User\UserDetailUpdateDto;
 
 use App\Dto\UserShifts\UserShiftsOutputDto;
 use App\State\UserShifts\UserShiftsProvider;
@@ -40,7 +41,7 @@ use App\State\UserShifts\UseShiftMetricProvider;
         ),
         new Metadata\Patch(
             input: UserUpdateDto::class,
-            output: UserDetailDto::class,
+            output: UserDetailUpdateDto::class,
             processor: UserProcessor::class,
         ),
         new Metadata\Delete(),

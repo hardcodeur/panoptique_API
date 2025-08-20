@@ -31,7 +31,7 @@ class UserDetailDto
         
         private ?string $email = null,
         
-        private array $roles = [],
+        private array $role = [],
 
         
         private ?\DateTimeImmutable $lastLogin = null
@@ -79,9 +79,9 @@ class UserDetailDto
         return $this->email;
     }
     
-    public function getRoles(): string
+    public function getRole(): string
     {
-        $role = $this->roles[0];
+        $role = $this->role[0];
         $roleNormelize = strtolower(str_replace('ROLE_','', $role));
         if($roleNormelize === "user" ){
             return "agent";

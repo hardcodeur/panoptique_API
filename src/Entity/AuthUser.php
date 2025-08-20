@@ -106,8 +106,8 @@ class AuthUser implements UserInterface, PasswordAuthenticatedUserInterface
         if(!array_key_exists($role,self::ROLE) ){
             throw new \InvalidArgumentException(sprintf('Rôle "%s" invalide',$role));
         }
-        $this->roles[] = self::ROLE[$role];
 
+        $this->roles = [self::ROLE[$role]];
         return $this;
     }
 
