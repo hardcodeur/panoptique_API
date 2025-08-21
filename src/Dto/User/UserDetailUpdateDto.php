@@ -65,7 +65,7 @@ class UserDetailUpdateDto
         return $this->teamName;
     }
 
-    public function getStatus(): ?int
+    public function getStatus(): ?string
     {   
         
         return $this->status;

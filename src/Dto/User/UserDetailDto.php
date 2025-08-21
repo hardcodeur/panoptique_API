@@ -26,8 +26,12 @@ class UserDetailDto
         private ?\DateTimeImmutable $updatedAt = null,
 
         private ?string $phone = null,
+
+        private ?int $status = null,
         
-        private ?string $team = null,
+        private ?int $teamId = null,
+        
+        private ?string $teamName = null,
         
         private ?string $email = null,
         
@@ -73,6 +77,11 @@ class UserDetailDto
     {
         return $this->phone;
     }
+
+    public function getStatus(): ?int
+    {
+        return $this->status;
+    }
     
     public function getEmail(): ?string
     {
@@ -89,9 +98,14 @@ class UserDetailDto
         return $roleNormelize;
     }
 
-    public function getTeam(): ?string
+    public function getTeamId(): ?int
     {
-        return $this->team;
+        return $this->teamId;
+    }
+
+    public function getTeamName(): ?string
+    {
+        return $this->teamName;
     }
     
     public function getLastLogin(): ?string

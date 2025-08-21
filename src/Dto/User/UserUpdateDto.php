@@ -44,8 +44,10 @@ class UserUpdateDto
             message: "Le numéro de téléphone saisi est invalide. Utilisez le format 0123456789 ou +33123456789."
         )]
         private ?string $phone = null,
-
         
+        #[Assert\Choice(choices: [0, 1])]
+        private ?int $status = null,
+
         #[Assert\Choice(
             choices: ['admin', 'manager', 'team_manager', 'agent'],
             message: 'Le rôle {{ value }} n\'est pas valide. Rôles valides: admin, manager, team_manager, agent'
@@ -79,6 +81,11 @@ class UserUpdateDto
     public function getPhone(): ?string
     {
         return $this->phone;
+    }
+
+    public function getStatus(): ?int
+    {
+        return $this->status;
     }
         
     public function getRole(): ?string

@@ -95,6 +95,8 @@ class UserProcessor implements ProcessorInterface
             $user->getCreatedAt(),
             $user->getUpdatedAt(),
             $user->getPhone(),
+            $user->getStatus(),
+            $user->getTeam()->getId(),
             $user->getTeam()->getName(),
             $user->getAuthUser()->getEmail(),
             $user->getAuthUser()->getRoles(),
@@ -127,6 +129,10 @@ class UserProcessor implements ProcessorInterface
 
         if ($data->getPhone() !== null) {
             $user->setPhone($data->getPhone());
+        }
+
+        if ($data->getStatus() !== null) {
+            $user->setStatus($data->getStatus());
         }
         
         if ($data->getRole() !== null) {
