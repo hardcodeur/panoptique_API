@@ -2,7 +2,7 @@
 
 namespace App\Message\MessageHandler\RegisterNewUser;
 
-use App\Message\Email\UserEmail;
+use App\Message\Email\AuthUserEmail;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\Messenger\Attribute\AsMessageHandler;
 
@@ -10,7 +10,7 @@ use Symfony\Component\Messenger\Attribute\AsMessageHandler;
 final class SendRegisterNewUserMessageHandler
 {
     public function __construct(
-        private UserEmail $userEmail,
+        private AuthUserEmail $authUserEmail,
         private LoggerInterface $logger
     ) {
     }
@@ -18,7 +18,7 @@ final class SendRegisterNewUserMessageHandler
     public function __invoke(RegisterNewUserData $data): void
     {
         try {
-            $this->userEmail->registreNewUser($data->getUserEmail(),$data->getGeneratedPassword());
+            $this->authUserEmail->registreNewUser($data->getUserEmail(),$data->getGeneratedPassword());
         } catch (\Exception $e) {
             $this->logger->error(
                 "Échec de l'envoi de l'email via le handler SendRegisterNewUserMessageHandler",
