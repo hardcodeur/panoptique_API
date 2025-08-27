@@ -44,7 +44,9 @@ use App\State\UserShifts\UseShiftMetricProvider;
             output: UserDetailUpdateDto::class,
             processor: UserProcessor::class,
         ),
-        new Metadata\Delete(),
+        new Metadata\Delete(
+            processor: UserProcessor::class,
+        ),
         new Metadata\Get(
             uriTemplate: '/users/{userId}/current-week-shifts',
             uriVariables: [
@@ -103,7 +105,6 @@ class User
     #[ORM\Column(length: 20)]
     private ?string $phone = null;
 
-    
 
     public function getId(): ?int
     {

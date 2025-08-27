@@ -7,6 +7,7 @@ use ApiPlatform\State\ProcessorInterface;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
 use ApiPlatform\Validator\Exception\ValidationException;
+use ApiPlatform\Metadata\Delete;
 # Dt0
 use App\Dto\User\UserCreateDto;
 use App\Dto\User\UserUpdateDto;
@@ -45,9 +46,16 @@ class UserProcessor implements ProcessorInterface
     {
         if ($data instanceof UserCreateDto) {
             return $this->handleCreate($data);
-        } elseif ($data instanceof UserUpdateDto) {
+        }
+        
+        if ($data instanceof UserUpdateDto) {
             $userId = $uriVariables['id'] ?? null;
             return $this->handleUpdate($userId,$data);
+        }
+
+        if ($operation instanceof Delete && $data instanceof User) {
+            $this->handleDelete($data);
+            return null;
         }
 
         return $data;
@@ -142,6 +150,12 @@ class UserProcessor implements ProcessorInterface
         if ($data->getTeam() !== null) {
             $user->setTeam($data->getTeam());
         }
+
+        # Validation of my entity 
+        $violations = $this->validator->validate($user);
+        if (count($violations) > 0) {
+            throw new ValidationException($violations);
+        }
         
         $this->entityManager->flush();
 
@@ -157,6 +171,11 @@ class UserProcessor implements ProcessorInterface
             $user->getAuthUser()->getEmail(),
             $user->getAuthUser()->getRoles()
         );
+    }
+
+    private function handleDelete(User $user){
+        $this->entityManager->remove($user);
+        $this->entityManager->flush();
     }
 
 }

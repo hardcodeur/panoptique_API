@@ -21,7 +21,7 @@ class Location
     private ?string $address = null;
 
     #[ORM\ManyToOne]
-    #[ORM\JoinColumn(nullable: false)]
+    #[ORM\JoinColumn(nullable: true)]
     private ?Team $team = null;
 
     #[ORM\OneToMany(mappedBy: 'location', targetEntity: LocationNote::class)]

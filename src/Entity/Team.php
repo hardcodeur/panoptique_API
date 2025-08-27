@@ -11,11 +11,41 @@ use App\Dto\Team\TeamListDto;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 
+//DTO 
+use App\Dto\Team\TeamCreateDto;
+use App\Dto\Team\TeamDetailDto;
+use App\Dto\Team\TeamUpdateDto;
+
+// STATE
+use App\State\Team\TeamProcessor;
+use App\State\Team\TeamItemProvider;
+
 #[ApiResource(
     operations: [
         new Metadata\GetCollection(
             output: TeamListDto::class,
             provider: TeamProvider::class
+        ),
+        new Metadata\Get(
+            uriTemplate: '/team/{id}',
+            output: TeamDetailDto::class,
+            provider: TeamItemProvider::class
+        ),
+        new Metadata\Post(
+            uriTemplate: '/team',
+            input: TeamCreateDto::class,
+            output: TeamDetailDto::class,
+            processor: TeamProcessor::class,
+        ),
+        new Metadata\Patch(
+            uriTemplate: '/team/{id}',
+            input: TeamUpdateDto::class,
+            output: TeamDetailDto::class,
+            processor: TeamProcessor::class,
+        ),
+        new Metadata\Delete(
+            uriTemplate: '/team/{id}',
+            processor: TeamProcessor::class,
         ),
     ]
 )]
@@ -33,9 +63,13 @@ class Team
     #[ORM\OneToMany(mappedBy: "team", targetEntity: User::class)]
     private Collection $users;
 
+    #[ORM\OneToMany(mappedBy: "team", targetEntity: Location::class)]
+    private Collection $locations;
+
     public function __construct()
     {
         $this->users = new ArrayCollection();
+        $this->locations = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -58,5 +92,10 @@ class Team
     public function getUsers(): Collection
     {
         return $this->users;
+    }
+
+    public function getLocation(): Collection
+    {
+        return $this->locations;
     }
 }
