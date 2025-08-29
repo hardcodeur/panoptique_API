@@ -97,20 +97,16 @@ class TeamProcessor implements ProcessorInterface
 
 
     public function handleDelete(Team $team){
-        // Select user in team and empty field team
+        // Select user in team and empty field team and delete user
         $teamUsers=$team->getUsers();
-        $teamLocation=$team->getLocation();
         foreach($teamUsers as $user){
             $user->setTeam(null);
+            $user->setIsDeleted(true);
         }
 
-        foreach($teamLocation as $location){
-            $location->setTeam(null);
-        }
         // Delete team
-        $this->entityManager->remove($team);
+        $team->setIsDeleted(true);
         $this->entityManager->flush();
     }
-
 
 }

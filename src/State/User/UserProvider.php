@@ -18,7 +18,7 @@ class UserProvider implements ProviderInterface
     public function provide(Operation $operation, array $uriVariables = [], array $context = []): object|array|null
     {
         // Récupération des utilisateurs
-        $users = $this->userRepository->findAll();
+        $users = $this->userRepository->findActiveUsers();
         
         // Transformation en DTOs
         return array_map(function ($user) {

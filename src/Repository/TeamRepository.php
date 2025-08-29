@@ -16,11 +16,23 @@ class TeamRepository extends ServiceEntityRepository
         parent::__construct($registry, Team::class);
     }
 
+    public function findActiveTeam(){
+        return $this->createQueryBuilder("t")
+        ->andWhere("t.is_deleted = :isDeleted")
+        ->setParameter(":isDeleted",false)
+        ->orderBy("t.name")
+        ->getQuery()
+        ->getResult();
+    }
+
     public function findTeamsUsers(): array
     {
         return $this->createQueryBuilder('t')
             ->leftJoin('t.users', 'u')
             ->addSelect('u')
+            ->andWhere("t.is_deleted = :isDeleted")
+            ->andWhere("u.is_deleted = :isDeleted")
+            ->setParameter(":isDeleted",false)
             ->getQuery()
             ->getResult();
     }

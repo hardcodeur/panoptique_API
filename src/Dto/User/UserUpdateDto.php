@@ -45,8 +45,8 @@ class UserUpdateDto
         )]
         private ?string $phone = null,
         
-        #[Assert\Choice(choices: [0, 1])]
-        private ?int $status = null,
+        #[Assert\Choice(choices: ["0", "1"])]
+        private ?string $status = null,
 
         #[Assert\Choice(
             choices: ['admin', 'manager', 'team_manager', 'agent'],
@@ -54,7 +54,7 @@ class UserUpdateDto
         )]
         private ?string $role = null,
 
-        private ?Team $team = null
+        private ?string $team = null
     ) {
     }
 
@@ -83,7 +83,7 @@ class UserUpdateDto
         return $this->phone;
     }
 
-    public function getStatus(): ?int
+    public function getStatus(): ?string
     {
         return $this->status;
     }
@@ -93,7 +93,7 @@ class UserUpdateDto
         return $this->role;
     }
 
-    public function getTeam(): ?Team
+    public function getTeam(): ?string
     {
         return $this->team;
     }

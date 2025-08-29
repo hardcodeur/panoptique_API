@@ -52,7 +52,8 @@ class UserCreateDto
         private ?string $role = null,
 
         #[Assert\NotBlank(message: "L'equipe est obligatoire")]
-        private ?Team $team = null
+        #[Assert\Type(type: 'string')]
+        private ?string $team = null
     ) {
     }
 
@@ -81,7 +82,7 @@ class UserCreateDto
         return $this->role;
     }
 
-    public function getTeam(): ?Team
+    public function getTeam(): ?string
     {
         return $this->team;
     }

@@ -60,6 +60,9 @@ class Team
     #[ORM\Column(length: 100)]
     private ?string $name = null;
 
+    #[ORM\Column(options: ['default' => false])]
+    private ?bool $is_deleted = false;
+
     #[ORM\OneToMany(mappedBy: "team", targetEntity: User::class)]
     private Collection $users;
 
@@ -97,5 +100,17 @@ class Team
     public function getLocation(): Collection
     {
         return $this->locations;
+    }
+
+    public function getIsDeleted(): ?bool
+    {
+        return $this->is_deleted;
+    }
+
+    public function setIsDeleted(bool $isDeleted): static
+    {
+        $this->is_deleted = $isDeleted;
+
+        return $this;
     }
 }

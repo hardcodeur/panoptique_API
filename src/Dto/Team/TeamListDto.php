@@ -10,14 +10,14 @@ class TeamListDto
 {
     public function __construct(
         #[ApiProperty(identifier: true)]
-        private ?int $id = null,
+        private ?string $id = null,
         
         private ?string $teamName = null,
 
     ) {
     }
 
-    public function getId(): ?int
+    public function getId(): ?string
     {
         return $this->id;
     }

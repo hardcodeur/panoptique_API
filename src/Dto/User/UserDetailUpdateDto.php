@@ -21,11 +21,11 @@ class UserDetailUpdateDto
 
         private ?string $phone = null,
 
-        private ?int $teamId = null,
+        private ?string $team = null,
 
         private ?string $teamName = null,
 
-        private ?int $status = null,
+        private ?string $status = null,
         
         private ?string $email = null,
         
@@ -55,9 +55,9 @@ class UserDetailUpdateDto
         return $this->phone;
     }
 
-    public function getTeamId(): ?int
+    public function getTeam(): ?string
     {
-        return $this->teamId;
+        return $this->team;
     }
 
     public function getTeamName(): ?string

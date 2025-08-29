@@ -17,7 +17,7 @@ class TeamProvider implements ProviderInterface
 
     public function provide(Operation $operation, array $uriVariables = [], array $context = []): object|array|null
     {
-        $teams = $this->teamRepository->findAll();
+        $teams = $this->teamRepository->findActiveTeam();
         
         return array_map(function ($team) {                                        
             return new TeamListDto(

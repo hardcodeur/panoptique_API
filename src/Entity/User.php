@@ -105,6 +105,8 @@ class User
     #[ORM\Column(length: 20)]
     private ?string $phone = null;
 
+    #[ORM\Column(options: ['default' => false])]
+    private ?bool $is_deleted = false;
 
     public function getId(): ?int
     {
@@ -231,6 +233,18 @@ class User
     public function setPhone(string $phone): static
     {
         $this->phone = $phone;
+
+        return $this;
+    }
+
+    public function getIsDeleted(): ?bool
+    {
+        return $this->is_deleted;
+    }
+
+    public function setIsDeleted(bool $isDeleted): static
+    {
+        $this->is_deleted = $isDeleted;
 
         return $this;
     }

@@ -20,11 +20,11 @@ class UserListDto
 
         private ?string $phone = null,
 
-        private ?int $teamId = null,
+        private ?string $teamId = null,
 
         private ?string $teamName = null,
 
-        private ?int $status = null,
+        private ?string $status = null,
         
         private ?\DateTimeImmutable $createdAt = null,
         
@@ -60,7 +60,7 @@ class UserListDto
         return $this->phone;
     }
 
-    public function getTeamId(): ?int
+    public function getTeamId(): ?string
     {
         return $this->teamId;
     }

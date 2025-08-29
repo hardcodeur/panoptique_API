@@ -63,14 +63,18 @@ class UserProcessor implements ProcessorInterface
 
     private function handleCreate(UserCreateDto $data): UserDetailDto
     {   
-
+        $teamId=$data->getTeam();
+        $team = $this->teamRepository->find($teamId);
+        if(!$team){
+            throw new NotFoundHttpException("L'équipe avec l'ID ".$teamId." n'existe pas");
+        }
         // user table
         $user = new User();
         $user->setFirstName($data->getFirstName());
         $user->setLastName($data->getLastName());
         $user->setPhone($data->getPhone());
         $user->setStatus(1);
-        $user->setTeam($data->getTeam());
+        $user->setTeam($team);
 
         // user_auth table
         $authUser = new AuthUser();
@@ -174,8 +178,17 @@ class UserProcessor implements ProcessorInterface
     }
 
     private function handleDelete(User $user){
-        $this->entityManager->remove($user);
+        $auth = $user->getAuthUser();
+
+        if ($auth) {
+            $this->entityManager->remove($auth);
+        }
+
+        $user->setIsDeleted(true);
+
         $this->entityManager->flush();
+
+        return null;
     }
 
 }

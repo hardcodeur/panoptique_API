@@ -23,6 +23,15 @@ class UserRepository extends ServiceEntityRepository
         ->getQuery()
         ->getResult();
     }
+    
+    public function findActiveUsers(){
+        return $this->createQueryBuilder("u")
+        ->andWhere("u.is_deleted = :isDeleted")
+        ->setParameter(":isDeleted",false)
+        ->orderBy("u.last_name","ASC")
+        ->getQuery()
+        ->getResult();
+    }
 
 //    /**
 //     * @return User[] Returns an array of User objects
