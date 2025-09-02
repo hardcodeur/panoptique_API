@@ -6,7 +6,7 @@ use ApiPlatform\Metadata\ApiProperty;
 use Symfony\Component\Validator\Constraints as Assert;
 
 /**
- * DTO for creating a new Team via API
+ * DTO for updating a Team via API
  */
 class TeamUpdateDto
 {   

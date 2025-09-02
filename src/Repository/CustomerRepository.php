@@ -16,6 +16,16 @@ class CustomerRepository extends ServiceEntityRepository
         parent::__construct($registry, Customer::class);
     }
 
+    public function getActiveCustomers(): array
+    {
+        return $this->createQueryBuilder('c')
+            ->andWhere('c.is_deleted = :isDelete')
+            ->setParameter('isDelete', false)
+            ->orderBy('c.name', 'ASC')
+            ->getQuery()
+            ->getResult();
+    }
+
 //    /**
 //     * @return Customer[] Returns an array of Customer objects
 //     */

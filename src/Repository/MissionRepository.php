@@ -17,13 +17,13 @@ class MissionRepository extends ServiceEntityRepository
         parent::__construct($registry, Mission::class);
     }
 
-    public function findMissions(): array
+    public function findCurrentAndFutureMissions(): array
     {
         $todayStart = new \DateTimeImmutable('today');
 
         return $this->createQueryBuilder('m')
-            ->where('m.start >= :todayStart')
-            ->setParameter('todayStart', $todayStart)
+            ->where('m.end >= :today')
+            ->setParameter('today', $todayStart)
             ->orderBy('m.start', 'ASC')
             ->getQuery()
             ->getResult();

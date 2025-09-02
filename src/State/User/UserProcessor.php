@@ -66,7 +66,7 @@ class UserProcessor implements ProcessorInterface
         $teamId=$data->getTeam();
         $team = $this->teamRepository->find($teamId);
         if(!$team){
-            throw new NotFoundHttpException("L'équipe avec l'ID ".$teamId." n'existe pas");
+            throw new NotFoundHttpException("L'équipe avec l'ID ".$$data->getTeam()." n'existe pas");
         }
         // user table
         $user = new User();

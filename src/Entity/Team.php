@@ -23,6 +23,7 @@ use App\State\Team\TeamItemProvider;
 #[ApiResource(
     operations: [
         new Metadata\GetCollection(
+            uriTemplate: '/team/list/name',
             output: TeamListDto::class,
             provider: TeamProvider::class
         ),

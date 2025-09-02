@@ -9,8 +9,15 @@ use App\Repository\MissionRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+// DTO
 use App\Dto\Mission\MissionListDto;
+use App\Dto\Mission\MissionDetailDto;
+use App\Dto\Mission\MissionCreateDto;
+use App\Dto\Mission\MissionUpdateDto;
+// State
 use App\State\Mission\MissionListProvider;
+use App\State\Mission\MissionItemProvider;
+use App\State\Mission\MissionProcessor;
 
 
 #[ApiResource(
@@ -19,21 +26,27 @@ use App\State\Mission\MissionListProvider;
             output: MissionListDto::class,
             provider: MissionListProvider::class
         ),
-        // new Metadata\Get(
-        //     output: UserDetailDto::class,
-        //     provider: UserItemProvider::class
-        // ),
-        // new Metadata\Post(
-        //     input: UserCreateDto::class,
-        //     output: UserDetailDto::class,
-        //     processor: UserProcessor::class,
-        // ),
-        // new Metadata\Put(
-        //     input: UserUpdateDto::class,
-        //     output: UserDetailDto::class,
-        //     processor: UserProcessor::class,
-        // ),
-        new Metadata\Delete()
+        new Metadata\Get(
+            uriTemplate: '/mission/{id}',
+            output: MissionDetailDto::class,
+            provider: MissionItemProvider::class
+        ),
+        new Metadata\Post(
+            uriTemplate: '/mission',
+            input: MissionCreateDto::class,
+            output: MissionDetailDto::class,
+            processor: MissionProcessor::class,
+        ),
+        new Metadata\Patch(
+            uriTemplate: '/mission/{id}',
+            input: MissionUpdateDto::class,
+            output: MissionDetailDto::class,
+            processor: MissionProcessor::class,
+        ),
+        new Metadata\Delete(
+            uriTemplate: '/mission/{id}',
+            processor: MissionProcessor::class,
+        )
     ]
 )]
 #[ORM\Entity(repositoryClass: MissionRepository::class)]
