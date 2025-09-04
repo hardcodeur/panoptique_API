@@ -24,10 +24,12 @@ class MissionListProvider implements ProviderInterface
                 $mission->getId(),
                 $mission->getStart(),
                 $mission->getEnd(),
+                $mission->getCustomer()->getId(),
                 $mission->getCustomer()->getName(),
                 $mission->getCustomer()->getProduct(),
                 $mission->getCustomer()->getLocation()->getName(),
                 $mission->getCustomer()->getLocation()->getAddress(),
+                $mission->getTeam()->getId(),
                 $mission->getTeam()->getName(), 
             );
         }, $missions);

@@ -36,10 +36,12 @@ class MissionListDto
         private ?int $id = null,
         private ?\DateTimeImmutable $start = null,
         private ?\DateTimeImmutable $end = null,
+        private ?int $customerId = null,
         private ?string $customer = null,
         private ?string $product = null,
         private ?string $location = null,
         private ?string $address = null,
+        private ?int $teamId = null,
         private ?string $team = null,
     ) {
     }
@@ -83,6 +85,11 @@ class MissionListDto
         return $date->format(self::HOUR_FORMAT);
     }
 
+    public function getCustomerId(): ?string
+    {
+        return $this->customerId;
+    }
+
     public function getCustomer(): ?string
     {
         return $this->customer;
@@ -112,6 +119,11 @@ class MissionListDto
     public function getAddress(): ?string
     {
         return $this->address;
+    }
+
+    public function getTeamId(): ?string
+    {
+        return $this->teamId;
     }
 
     public function getTeam(): ?string

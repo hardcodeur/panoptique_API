@@ -19,6 +19,10 @@ use App\Repository\CustomerRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use App\Repository\MissionRepository;
 
+// Email
+use Symfony\Component\Messenger\MessageBusInterface;
+use App\Message\MessageHandler\RegisterNewMission\RegisterNewMissionData;
+
 use Symfony\Component\Validator\Validator\ValidatorInterface;
 
 class MissionProcessor implements ProcessorInterface
@@ -28,7 +32,8 @@ class MissionProcessor implements ProcessorInterface
         private MissionRepository $missionRepository,
         private TeamRepository $teamRepository,
         private CustomerRepository $customerRepository,
-        private ValidatorInterface $validator
+        private ValidatorInterface $validator,
+        private MessageBusInterface $messageBus,
     ) {
     }
 
@@ -78,6 +83,14 @@ class MissionProcessor implements ProcessorInterface
 
         $this->entityManager->persist($item);
         $this->entityManager->flush();
+
+        // Send email at all team
+        $users=$team->getUsers();
+        foreach ($users as $user) {
+            $userEmail = $user->getAuthUser()->getEmail();
+            // asynchrone send Email
+            $this->messageBus->dispatch(new RegisterNewMissionData($userEmail, $item));
+        }
 
         return new MissionDetailDto(
             $item->getId(),
