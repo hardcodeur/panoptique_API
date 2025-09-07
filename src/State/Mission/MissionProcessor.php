@@ -12,6 +12,7 @@ use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use App\Dto\Mission\MissionCreateDto;
 use App\Dto\Mission\MissionUpdateDto;
 use App\Dto\Mission\MissionDetailDto;
+use App\Dto\Mission\MissionListDto;
 // doctrine
 use App\Entity\Mission;
 use App\Repository\TeamRepository;
@@ -22,6 +23,7 @@ use App\Repository\MissionRepository;
 // Email
 use Symfony\Component\Messenger\MessageBusInterface;
 use App\Message\MessageHandler\RegisterNewMission\RegisterNewMissionData;
+use App\Message\MessageHandler\RegisterDeleteMission\RegisterDeleteMissionData;
 
 use Symfony\Component\Validator\Validator\ValidatorInterface;
 
@@ -132,16 +134,26 @@ class MissionProcessor implements ProcessorInterface
             $item->getId(),
             $item->getStart(),
             $item->getEnd(),
-            $item->getCustomer()->getName(),
-            $item->getTeam()->getName(),
+            $item->getCustomer()->getId(),
+            $item->getTeam()->getId(),
             $item->getCreatedAt(),
             $item->getUpdatedAt(),
         );
-        
+
     }
 
 
     public function handleDelete(Mission $item){
+
+        // Send email at all team
+        $team = $this->teamRepository->find($item->getTeam());
+        $users=$team->getUsers();
+        foreach ($users as $user) {
+            $userEmail = $user->getAuthUser()->getEmail();
+            // asynchrone send Email
+            $this->messageBus->dispatch(new RegisterDeleteMissionData($userEmail, $item));
+        }
+        
         $this->entityManager->remove($item);
         $this->entityManager->flush();
     }

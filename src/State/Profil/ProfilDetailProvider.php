@@ -19,7 +19,7 @@ class ProfilDetailProvider implements ProviderInterface
     public function provide(Operation $operation, array $uriVariables = [], array $context = []): object|array|null
     {
         // Récupération de l'utilisateur par ID
-        $id = $uriVariables['id'] ?? null;
+        $id = $uriVariables['id'];
         $user = $this->userRepository->find($id);
         
         if (!$user) {

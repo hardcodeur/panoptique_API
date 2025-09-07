@@ -152,7 +152,12 @@ class UserProcessor implements ProcessorInterface
         }
 
         if ($data->getTeam() !== null) {
-            $user->setTeam($data->getTeam());
+            $teamId=$data->getTeam();
+            $team = $this->teamRepository->find($teamId);
+            if(!$team){
+                throw new NotFoundHttpException("L'équipe avec l'ID ".$$data->getTeam()." n'existe pas");
+            }
+            $user->setTeam($team);
         }
 
         # Validation of my entity 
@@ -178,6 +183,7 @@ class UserProcessor implements ProcessorInterface
     }
 
     private function handleDelete(User $user){
+
         $auth = $user->getAuthUser();
 
         if ($auth) {
