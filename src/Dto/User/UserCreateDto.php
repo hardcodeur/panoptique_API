@@ -3,7 +3,6 @@
 namespace App\Dto\User;
 
 use Symfony\Component\Validator\Constraints as Assert;
-use App\Entity\Team;
 
 /**
  * DTO for creating a new User via API
