@@ -53,12 +53,6 @@ class NotificationProcessor implements ProcessorInterface
         $item->setText($data->getText());
         $item->setUser($user);
 
-        # Validation of my entity 
-        $violations = $this->validator->validate($item);
-        if (count($violations) > 0) {
-            throw new ValidationException($violations);
-        }
-
         $this->entityManager->persist($item);
         $this->entityManager->flush();
 

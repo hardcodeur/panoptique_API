@@ -4,11 +4,40 @@ namespace App\Entity;
 
 use App\Repository\LocationRepository;
 use Doctrine\Common\Collections\Collection;
+use ApiPlatform\Metadata\ApiResource;
+use ApiPlatform\Metadata;
 use Doctrine\ORM\Mapping as ORM;
 
+use App\Dto\Location\LocationListDto;
+use App\State\Location\LocationProvider;
+use App\Dto\Location\LocationCreateDto;
+use App\State\Location\LocationProcessor;
+use App\Dto\Location\LocationDetailDto;
+use App\Dto\Location\LocationUpdateDto;
+
+#[ApiResource(
+    operations: [
+        new Metadata\GetCollection(
+            output: LocationListDto::class,
+            provider: LocationProvider::class
+        ),
+        new Metadata\Post(
+            uriTemplate: '/location',
+            input: LocationCreateDto::class,
+            output: LocationDetailDto::class,
+            processor: LocationProcessor::class,
+        ),
+        new Metadata\Patch(
+            uriTemplate: '/location/{id}',
+            input: LocationUpdateDto::class,
+            output: LocationDetailDto::class,
+            processor: LocationProcessor::class,
+        )
+    ]
+)]
 #[ORM\Entity(repositoryClass: LocationRepository::class)]
 class Location
-{
+{   
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
@@ -24,8 +53,12 @@ class Location
     #[ORM\JoinColumn(nullable: true)]
     private ?Team $team = null;
 
-    #[ORM\OneToMany(mappedBy: 'location', targetEntity: LocationNote::class)]
+    #[ORM\OneToMany(mappedBy: 'location', targetEntity: LocationNote::class, cascade: ["remove"], orphanRemoval: true)]
     private Collection $locationNotes;
+
+    public function __construct(){
+        $this->locationNotes = new \Doctrine\Common\Collections\ArrayCollection();
+    }
 
     public function getId(): ?int
     {
@@ -74,27 +107,5 @@ class Location
     public function getLocationNotes(): Collection
     {
         return $this->locationNotes;
-    }
-
-    public function addLocationNote(LocationNote $locationNote): static
-    {
-        if (!$this->locationNotes->contains($locationNote)) {
-            $this->locationNotes->add($locationNote);
-            $locationNote->setLocation($this);
-        }
-
-        return $this;
-    }
-
-    public function removeLocationNote(LocationNote $locationNote): static
-    {
-        if ($this->locationNotes->removeElement($locationNote)) {
-            // set the owning side to null (unless already changed)
-            if ($locationNote->getLocation() === $this) {
-                $locationNote->setLocation(null);
-            }
-        }
-
-        return $this;
     }
 }

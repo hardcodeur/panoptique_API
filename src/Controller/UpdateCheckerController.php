@@ -10,10 +10,13 @@ use Symfony\Component\Serializer\SerializerInterface;
 use App\Repository\UserRepository;
 use App\Repository\TeamRepository;
 use App\Repository\MissionRepository;
+use App\Repository\LocationRepository;
 // DTO
 use App\Dto\UpdateCheker\UserUpdateCheckerDto;
 use App\Dto\UpdateCheker\TeamUpdateCheckerDto;
 use App\Dto\UpdateCheker\MissionUpdateCheckerDto;
+use App\Dto\UpdateCheker\locationUpdateCheckerDto;
+use App\Dto\UpdateCheker\locationNoteUpdateCheckerDto;
 
 final class UpdateCheckerController extends AbstractController
 {   
@@ -22,6 +25,7 @@ final class UpdateCheckerController extends AbstractController
         private UserRepository $userRepository,
         private TeamRepository $teamRepository,
         private MissionRepository $missionRepository,
+        private LocationRepository $locationRepository,
         private SerializerInterface $serializer
     ) {
     }
@@ -87,6 +91,42 @@ final class UpdateCheckerController extends AbstractController
             $item->getId(),
             $item->getStart(),
             $item->getEnd(),
+        );
+
+        // Serialize the DTO to JSON
+        $json = $this->serializer->serialize($dto, 'json');
+
+        return new JsonResponse($json, JsonResponse::HTTP_OK, [], true);
+    }
+
+    #[Route('api/update/checker/location/{id}', name: 'api_update_checker_location',methods:["GET"])]
+    public function updateCheckerLocation(int $id): JsonResponse
+    {
+
+        $item = $this->locationRepository->find($id);
+
+        if (!$item) {
+            return new JsonResponse(['message' => 'Location not found'], JsonResponse::HTTP_NOT_FOUND);
+        }
+
+        $locationNotes=[];
+        if(!empty($item->getLocationNotes())){
+            foreach($item->getLocationNotes() as $note){
+                $locationNote = new locationNoteUpdateCheckerDto(
+                    $note->getId(),
+                    $note->getTitle(),
+                    $note->getNote(),
+                );
+                $locationNotes[]=$locationNote;
+            }
+        }
+
+        $dto = new locationUpdateCheckerDto(
+            $item->getid(),
+            $item->getName(),
+            $item->getAddress(),
+            $item->getTeam()->getId(),
+            $locationNotes
         );
 
         // Serialize the DTO to JSON

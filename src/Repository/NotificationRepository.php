@@ -30,6 +30,20 @@ class NotificationRepository extends ServiceEntityRepository
             ->getResult();
     }
 
+    public function countLatestActiveNotificationsBeforLastConnectionByUser(User $user,\DateTimeInterface $lastConnectionDate): int
+    {
+        return $this->createQueryBuilder('n')
+            ->select('COUNT(n.id)')
+            ->andWhere('n.user = :user')
+            ->andWhere('n.is_delete = :isDeleted')
+            ->andWhere('n.created_at > :lastConnectionDate')
+            ->setParameter('user', $user)
+            ->setParameter('isDeleted', false)
+            ->setParameter('lastConnectionDate', $lastConnectionDate)
+            ->getQuery()
+            ->getSingleScalarResult();
+    }
+
 //    /**
 //     * @return Notification[] Returns an array of Notification objects
 //     */

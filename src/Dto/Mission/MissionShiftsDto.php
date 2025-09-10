@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Dto\MissionShifts;
+namespace App\Dto\Mission;
 
 use ApiPlatform\Metadata\ApiProperty;
 

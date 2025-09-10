@@ -21,8 +21,8 @@ class LocationNote
     #[ORM\Column(type: Types::TEXT)]
     private ?string $note = null;
 
-    #[ORM\ManyToOne]
-    #[ORM\JoinColumn(nullable: false)]
+    #[ORM\ManyToOne(inversedBy: 'locationNotes')]
+    #[ORM\JoinColumn(nullable: false, onDelete: "CASCADE")]
     private ?location $location = null;
 
     #[ORM\Column]

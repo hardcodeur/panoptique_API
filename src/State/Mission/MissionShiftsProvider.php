@@ -1,10 +1,10 @@
 <?php
 
-namespace App\State\MissionShifts;
+namespace App\State\Mission;
 
 use ApiPlatform\Metadata\Operation;
 use ApiPlatform\State\ProviderInterface;
-use App\Dto\MissionShifts\MissionShiftsDto;
+use App\Dto\Mission\MissionShiftsDto;
 use App\Repository\MissionRepository;
 
 class MissionShiftsProvider implements ProviderInterface

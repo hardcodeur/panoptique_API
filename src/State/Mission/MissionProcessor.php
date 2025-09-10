@@ -76,13 +76,6 @@ class MissionProcessor implements ProcessorInterface
         $item->setCustomer($customer);
         $item->setTeam($team);
 
-
-        # Validation of my entity 
-        $violations = $this->validator->validate($item);
-        if (count($violations) > 0) {
-            throw new ValidationException($violations);
-        }
-
         $this->entityManager->persist($item);
         $this->entityManager->flush();
 
@@ -114,11 +107,6 @@ class MissionProcessor implements ProcessorInterface
             throw new NotFoundHttpException(sprintf("La mission avec l'ID : %d n'existe pas", $itemId));
         }
 
-        # Validation of my entity 
-        $violations = $this->validator->validate($item);
-        if (count($violations) > 0) {
-            throw new ValidationException($violations);
-        }
 
         if($data->getStart() !== null){
             $item->setStart($data->getStart());

@@ -1,11 +1,22 @@
 framework:
     rate_limiter:
+
         login:
-            policy: 'fixed_window' # Protection Brut force 
-            limit: 6              # 6 tentatives 
-            interval: '15 minutes'  # Réinitialisation toutes les 15 minutes
+            policy: 'fixed_window' 
+            limit: 6              
+            interval: '15 minutes'
+        # Rate global for auth user
+        api:
+            policy: 'sliding_window'
+            limit: 120
+            interval: '1 minute'
         
         refresh_token:
             policy: 'sliding_window'
-            limit: 20             # 20 refresh
-            interval: '10 hours'  
+            limit: 20
+            interval: '7 days'
+
+        password_reset:
+            policy: 'fixed_window'
+            limit: 3
+            interval: '1 hour'

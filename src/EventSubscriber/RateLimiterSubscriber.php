@@ -15,7 +15,9 @@ class RateLimiterSubscriber implements EventSubscriberInterface
 
     public function __construct(
         #[Autowire(service: 'limiter.login')] private RateLimiterFactory $loginLimiter,
-        #[Autowire(service: 'limiter.refresh_token')] private RateLimiterFactory $refreshLimiter
+        #[Autowire(service: 'limiter.refresh_token')] private RateLimiterFactory $refreshLimiter,
+        #[Autowire(service: 'limiter.api')] private RateLimiterFactory $apiLimiter,
+        #[Autowire(service: 'limiter.password_reset')] private RateLimiterFactory $passwordResetLimiter
     ) {}
 
     public static function getSubscribedEvents(): array
@@ -27,27 +29,38 @@ class RateLimiterSubscriber implements EventSubscriberInterface
     {
         $request = $event->getRequest();
         $path = $request->getPathInfo();
+        $limiter = null;
 
-        $limiterMapping = [
-            // '/api/login' => $this->loginLimiter,
-            // '/api/token/refresh' => $this->refreshLimiter,
-        ];
-
-        if (!isset($limiterMapping[$path])) {
-            return;
+        // Appliquer les limiteurs les plus spécifiques en premier
+        switch ($path) {
+            case '/api/login':
+                $limiter = $this->loginLimiter->create($request->getClientIp());
+                break;
+            case '/api/token/refresh':
+                $limiter = $this->refreshLimiter->create($request->getClientIp());
+                break;
+            case '/api/reset/password':
+                $limiter = $this->passwordResetLimiter->create($request->getClientIp());
+                break;
         }
 
-        $limiter = $limiterMapping[$path]->create($request->getClientIp());
+        // Si aucun limiteur spécifique n'a été trouvé, vérifier s'il s'agit d'une route API générale
+        if ($limiter === null && str_starts_with($path, '/api/')) {
+            $limiter = $this->apiLimiter->create($request->getClientIp());
+        }
 
-        try {
-            $limiter->consume()->ensureAccepted();
-        } catch (RateLimitExceededException) {
-            $event->setResponse(
-                new JsonResponse(
-                    ['message' => 'Too many requests'],
-                    Response::HTTP_TOO_MANY_REQUESTS
-                )
-            );
+        // Si un limiteur a été appliqué, le consommer
+        if ($limiter !== null) {
+            try {
+                $limiter->consume()->ensureAccepted();
+            } catch (RateLimitExceededException) {
+                $event->setResponse(
+                    new JsonResponse(
+                        ['message' => 'Too many requests'],
+                        Response::HTTP_TOO_MANY_REQUESTS
+                    )
+                );
+            }
         }
     }
 

@@ -51,8 +51,6 @@ class MissionRepository extends ServiceEntityRepository
             ->addSelect('s')
             ->leftJoin('s.user', 'u')
             ->addSelect('u')
-            ->leftJoin('u.authUser', 'au')
-            ->addSelect('au')
             ->leftJoin('m.customer', 'c')
             ->addSelect('c')
             ->leftJoin('c.location', 'l')

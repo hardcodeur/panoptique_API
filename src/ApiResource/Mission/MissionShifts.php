@@ -1,10 +1,10 @@
 <?php 
-namespace App\ApiResource;
+namespace App\ApiResource\Mission;
 
 use ApiPlatform\Metadata\Get;
 use ApiPlatform\Metadata\ApiResource;
-use App\Dto\MissionShifts\MissionShiftsDto;
-use App\State\MissionShifts\MissionShiftsProvider;
+use App\Dto\Mission\MissionShiftsDto;
+use App\State\Mission\MissionShiftsProvider;
 
 
 #[ApiResource(

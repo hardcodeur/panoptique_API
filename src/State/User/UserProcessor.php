@@ -87,11 +87,6 @@ class UserProcessor implements ProcessorInterface
 
         $user->setAuthUser($authUser);
 
-        # Validation of my entity 
-        $violations = $this->validator->validate($user);
-        if (count($violations) > 0) {
-            throw new ValidationException($violations);
-        }
 
         $this->entityManager->persist($user);
         $this->entityManager->flush();
@@ -158,12 +153,6 @@ class UserProcessor implements ProcessorInterface
                 throw new NotFoundHttpException("L'équipe avec l'ID ".$$data->getTeam()." n'existe pas");
             }
             $user->setTeam($team);
-        }
-
-        # Validation of my entity 
-        $violations = $this->validator->validate($user);
-        if (count($violations) > 0) {
-            throw new ValidationException($violations);
         }
         
         $this->entityManager->flush();

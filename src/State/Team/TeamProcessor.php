@@ -52,12 +52,6 @@ class TeamProcessor implements ProcessorInterface
         $team = new Team;
         $team->setName($data->getTeamName());
 
-        # Validation of my entity 
-        $violations = $this->validator->validate($team);
-        if (count($violations) > 0) {
-            throw new ValidationException($violations);
-        }
-
         $this->entityManager->persist($team);
         $this->entityManager->flush();
 
@@ -76,11 +70,6 @@ class TeamProcessor implements ProcessorInterface
             throw new NotFoundHttpException(sprintf("L'équipe avec l'ID : %d n'existe pas", $teamId));
         }
 
-        # Validation of my entity 
-        $violations = $this->validator->validate($team);
-        if (count($violations) > 0) {
-            throw new ValidationException($violations);
-        }
 
         if($data->getTeamName() !== null){
             $team->setName($data->getTeamName());
