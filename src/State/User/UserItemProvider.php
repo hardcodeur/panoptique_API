@@ -37,8 +37,8 @@ class UserItemProvider implements ProviderInterface
             $user->getUpdatedAt(),
             $user->getPhone(),
             $user->getStatus(),
-            $user->getTeam()->getId(),
-            $user->getTeam()->getName(),
+            $user->getTeam()?->getId(),
+            $user->getTeam()?->getName(),
             $authUser->getEmail(),
             $authUser->getRoles(),
             $authUser ? $authUser->getLastLogin() : null

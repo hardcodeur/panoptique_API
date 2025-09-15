@@ -7,26 +7,27 @@ use ApiPlatform\Metadata\Operation;
 use ApiPlatform\State\ProviderInterface;
 use App\Dto\Profil\ProfilDetailDto;
 use App\Repository\UserRepository;
-use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
+use Symfony\Bundle\SecurityBundle\Security;
+use Symfony\Component\HttpKernel\Exception\UnauthorizedHttpException;
 
 class ProfilDetailProvider implements ProviderInterface
 {
     public function __construct(
-        private UserRepository $userRepository
+        private UserRepository $userRepository,
+        private Security $security
     ) {
     }
 
     public function provide(Operation $operation, array $uriVariables = [], array $context = []): object|array|null
     {
-        // Récupération de l'utilisateur par ID
-        $id = $uriVariables['id'];
-        $user = $this->userRepository->find($id);
-        
-        if (!$user) {
-            throw new NotFoundHttpException('Utilisateur non trouvé');
+        /** @var \App\Entity\AuthUser|null $authUser */
+        $authUser = $this->security->getUser();
+
+        if (!$authUser) {
+            throw new UnauthorizedHttpException('Bearer', 'User not authenticated.');
         }
         
-        $authUser = $user->getAuthUser();
+        $user = $authUser->getUser();
                 
         // Création du DTO
         return new ProfilDetailDto(
@@ -36,10 +37,10 @@ class ProfilDetailProvider implements ProviderInterface
             $user->getCreatedAt(),
             $user->getUpdatedAt(),
             $user->getPhone(),
-            $user->getTeam()->getName(),
-            $authUser ? $authUser->getEmail() : null,
-            $authUser ? $authUser->getRoles() : null,
-            $authUser ? $authUser->getLastLogin() : null
+            $user->getTeam()?->getName(),
+            $authUser->getEmail(),
+            $authUser->getRoles(),
+            $authUser->getLastLogin()
         );
     }
     

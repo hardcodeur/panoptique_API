@@ -13,20 +13,12 @@ use ApiPlatform\Metadata;
 use App\State\User\UserProvider;
 use App\State\User\UserItemProvider;
 use App\State\User\UserProcessor;
-use App\State\Profil\ProfilDetailProvider;
 
 use App\Dto\User\UserListDto;
 use App\Dto\User\UserDetailDto;
 use App\Dto\User\UserCreateDto;
 use App\Dto\User\UserUpdateDto;
 use App\Dto\User\UserDetailUpdateDto;
-use App\Dto\Profil\ProfilDetailDto;
-
-use App\Dto\UserShifts\UserShiftsOutputDto;
-use App\State\UserShifts\UserShiftsProvider;
-
-use App\Dto\UserShifts\UseShiftMetricOutputDto;
-use App\State\UserShifts\UseShiftMetricProvider;
 
 #[ApiResource(
     operations: [
@@ -50,33 +42,6 @@ use App\State\UserShifts\UseShiftMetricProvider;
         ),
         new Metadata\Delete(
             processor: UserProcessor::class,
-        ),
-        new Metadata\Get(
-            uriTemplate: '/user/profil/{id}',
-            uriVariables: [
-                'id' => new Metadata\Link(fromClass: User::class)
-            ],
-            output: ProfilDetailDto::class,
-            provider: ProfilDetailProvider::class,
-            name: 'get_user_profil'
-        ),
-        new Metadata\Get(
-            uriTemplate: '/users/{userId}/current-week-shifts',
-            uriVariables: [
-                'userId' => new Metadata\Link(fromClass: User::class)
-            ],
-            output: UserShiftsOutputDto::class,
-            provider: UserShiftsProvider::class,
-            name: 'user_current_week_shifts'
-        ),
-        new Metadata\Get(
-            uriTemplate: '/users/{userId}/metric-shift',
-            uriVariables: [
-                'userId' => new Metadata\Link(fromClass: User::class)
-            ],
-            output: UseShiftMetricOutputDto::class,
-            provider: UseShiftMetricProvider::class,
-            name: 'user_current_month_shifts_metric'
         )
     ]
 )]

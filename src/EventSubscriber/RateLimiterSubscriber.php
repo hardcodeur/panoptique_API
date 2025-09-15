@@ -39,9 +39,9 @@ class RateLimiterSubscriber implements EventSubscriberInterface
             case '/api/token/refresh':
                 $limiter = $this->refreshLimiter->create($request->getClientIp());
                 break;
-            case '/api/reset/password':
-                $limiter = $this->passwordResetLimiter->create($request->getClientIp());
-                break;
+            // case '/api/reset/password':
+            //     $limiter = $this->passwordResetLimiter->create($request->getClientIp());
+            //     break;
         }
 
         // Si aucun limiteur spécifique n'a été trouvé, vérifier s'il s'agit d'une route API générale

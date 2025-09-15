@@ -103,8 +103,8 @@ class UserProcessor implements ProcessorInterface
             $user->getUpdatedAt(),
             $user->getPhone(),
             $user->getStatus(),
-            $user->getTeam()->getId(),
-            $user->getTeam()->getName(),
+            $user->getTeam()?->getId(),
+            $user->getTeam()?->getName(),
             $user->getAuthUser()->getEmail(),
             $user->getAuthUser()->getRoles(),
         );
@@ -163,8 +163,8 @@ class UserProcessor implements ProcessorInterface
             $user->getFirstName(),
             $user->getLastName(),
             $user->getPhone(),
-            $user->getTeam()->getId(),
-            $user->getTeam()->getName(),
+            $user->getTeam()?->getId(),
+            $user->getTeam()?->getName(),
             $user->getStatus(),
             $user->getAuthUser()->getEmail(),
             $user->getAuthUser()->getRoles()

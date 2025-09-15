@@ -30,8 +30,8 @@ class MissionItemProvider implements ProviderInterface
             $item->getId(),
             $item->getStart(),
             $item->getEnd(),
-            $item->getCustomer()->getId(),
-            $item->getTeam()->getId(),
+            $item->getCustomer()?->getId(),
+            $item->getTeam()?->getId(),
             $item->getCreatedAt(),
             $item->getUpdatedAt(),
         );

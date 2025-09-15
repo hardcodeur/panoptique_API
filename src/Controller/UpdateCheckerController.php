@@ -47,7 +47,7 @@ final class UpdateCheckerController extends AbstractController
             $item->getPhone(),
             $item->getStatus(),
             $item->getAuthUser()->getRoles()[0],
-            $item->getTeam()->getId()
+            $item->getTeam()?->getId()
         );
 
         // Serialize the DTO to JSON
@@ -125,7 +125,7 @@ final class UpdateCheckerController extends AbstractController
             $item->getid(),
             $item->getName(),
             $item->getAddress(),
-            $item->getTeam()->getId(),
+            $item->getTeam()?->getId(),
             $locationNotes
         );
 

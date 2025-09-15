@@ -29,8 +29,8 @@ class MissionListProvider implements ProviderInterface
                 $mission->getCustomer()->getProduct(),
                 $mission->getCustomer()->getLocation()->getName(),
                 $mission->getCustomer()->getLocation()->getAddress(),
-                $mission->getTeam()->getId(),
-                $mission->getTeam()->getName(), 
+                $mission->getTeam()?->getId(),
+                $mission->getTeam()?->getName(), 
             );
         }, $missions);
     }

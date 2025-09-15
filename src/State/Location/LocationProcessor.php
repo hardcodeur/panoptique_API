@@ -90,7 +90,7 @@ class LocationProcessor implements ProcessorInterface
             $location->getId(),
             $location->getName(),
              $location->getAddress(),
-            $location->getTeam()->getId(),
+            $location->getTeam()?->getId(),
             $locationNote
         );
 
@@ -152,7 +152,7 @@ class LocationProcessor implements ProcessorInterface
             $location->getId(),
             $location->getName(),
             $location->getAddress(),
-            $location->getTeam()->getId(),
+            $location->getTeam()?->getId(),
             $locationNote
         );
     }

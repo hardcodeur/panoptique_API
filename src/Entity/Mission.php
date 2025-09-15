@@ -186,11 +186,20 @@ class Mission
         return $this->shifts;
     }
 
+    public function addShift(Shift $shift): static
+    {
+        if (!$this->shifts->contains($shift)) {
+            $this->shifts->add($shift);
+            $shift->setMission($this);
+        }
+
+        return $this;
+    }
+
 
     public function removeShift(Shift $shift): static
     {
         if ($this->shifts->removeElement($shift)) {
-            // set the owning side to null (unless already changed)
             if ($shift->getMission() === $this) {
                 $shift->setMission(null);
             }

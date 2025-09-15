@@ -38,6 +38,13 @@ class JwtAuthenticationSubscriber implements EventSubscriberInterface
         ];
     }
 
+    private const ROLE = [
+        "ROLE_ADMIN"=>"admin",
+        "ROLE_MANAGER"=>"manager",
+        "ROLE_TEAM_MANAGER"=>"team_manager",
+        "ROLE_USER"=>"agent"
+    ];
+
     public function onAuthenticationSuccess(AuthenticationSuccessEvent $event, ): void
     {   
         // Update last login field
@@ -106,7 +113,7 @@ class JwtAuthenticationSubscriber implements EventSubscriberInterface
 
         $payload['id'] = $userProfile->getId();
         $payload['userName'] = $userProfile->getFirstName()." ".$userProfile->getLastName();
-        $payload['role'] = $payload['roles'][0];
+        $payload['role'] = self::ROLE[$payload['roles'][0]];
         unset($payload['roles'],);
 
         $event->setData($payload);

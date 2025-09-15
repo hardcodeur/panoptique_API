@@ -19,7 +19,7 @@ class MissionEmail
         $dateStart = $mission->getStart()->format('d/m/Y H:i');
         $dateEnd = $mission->getEnd()->format('d/m/Y H:i');
         $customer = $mission->getCustomer()->getName();
-        $team = $mission->getTeam()->getName();
+        $team = $mission->getTeam()?->getName();
 
         $email = (new Email())
             ->from("no-reply@panoptique.com")
