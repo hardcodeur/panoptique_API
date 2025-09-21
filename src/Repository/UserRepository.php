@@ -33,6 +33,17 @@ class UserRepository extends ServiceEntityRepository
         ->getResult();
     }
 
+    public function findActiveUsersTeam(int $teamId): array
+    {
+        return $this->createQueryBuilder('u')
+        ->andWhere('u.team = :team')
+        ->andWhere('u.is_deleted = :isDeleted')
+        ->setParameter('team', $teamId)
+        ->setParameter('isDeleted', false)
+        ->getQuery()
+        ->getResult();
+    }
+
 //    /**
 //     * @return User[] Returns an array of User objects
 //     */
