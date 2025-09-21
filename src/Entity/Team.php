@@ -15,10 +15,12 @@ use Doctrine\Common\Collections\Collection;
 use App\Dto\Team\TeamCreateDto;
 use App\Dto\Team\TeamDetailDto;
 use App\Dto\Team\TeamUpdateDto;
+use App\Dto\TeamUsers\TeamUsersDto;
 
 // STATE
 use App\State\Team\TeamProcessor;
 use App\State\Team\TeamItemProvider;
+use App\State\TeamUsers\TeamUsersProvider;
 
 #[ApiResource(
     operations: [
@@ -26,6 +28,11 @@ use App\State\Team\TeamItemProvider;
             uriTemplate: '/team/list/name',
             output: TeamListDto::class,
             provider: TeamProvider::class
+        ),
+        new Metadata\GetCollection(
+            uriTemplate: '/team/list/member',
+            output: TeamUsersDto::class,
+            provider: TeamUsersProvider::class
         ),
         new Metadata\Get(
             uriTemplate: '/team/{id}',

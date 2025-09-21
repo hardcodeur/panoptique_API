@@ -22,9 +22,48 @@ class MissionRepository extends ServiceEntityRepository
         $todayStart = new \DateTimeImmutable('today');
 
         return $this->createQueryBuilder('m')
+            ->leftJoin('m.shifts', 's')
+            ->addSelect('s')
+            ->leftJoin('s.user', 'u')
+            ->addSelect('u')
+            ->leftJoin('m.customer', 'c')
+            ->addSelect('c')
+            ->leftJoin('c.location', 'l')
+            ->addSelect('l')
+            ->leftJoin('m.team', 't')
+            ->addSelect('t')
             ->where('m.end >= :today')
             ->setParameter('today', $todayStart)
             ->orderBy('m.start', 'ASC')
+            ->addOrderBy('s.start', 'ASC')
+            ->getQuery()
+            ->getResult();
+    }
+
+
+    public function findCurrentAndFutureMissionsByUserId(int $id): array
+    {
+        $todayStart = new \DateTimeImmutable('today');
+
+        return $this->createQueryBuilder('m')
+            ->innerJoin('m.shifts', 'user_shift')
+            ->leftJoin('m.shifts', 'all_shifts')
+            ->addSelect('all_shifts')
+            ->leftJoin('all_shifts.user', 'u')
+            ->addSelect('u')
+            ->leftJoin('m.customer', 'c')
+            ->addSelect('c')
+            ->leftJoin('c.location', 'l')
+            ->addSelect('l')
+            ->leftJoin('m.team', 't')
+            ->addSelect('t')
+            ->where('m.end >= :today')
+            ->andWhere('user_shift.user = :userId')
+            ->distinct()
+            ->setParameter('today', $todayStart)
+            ->setParameter('userId', $id)
+            ->orderBy('m.start', 'ASC')
+            ->addOrderBy('all_shifts.start', 'ASC')
             ->getQuery()
             ->getResult();
     }
@@ -63,6 +102,18 @@ class MissionRepository extends ServiceEntityRepository
             ->addOrderBy('s.start', 'ASC')
             ->getQuery()
             ->getResult();
+    }
+
+    public function findMissionWithShiftById(int $id){
+        return $this->createQueryBuilder('m')
+            ->leftJoin('m.shifts', 's')
+            ->addSelect('s')
+            ->leftJoin('s.user', 'u')
+            ->addSelect('u')
+            ->where('m.id = :id')
+            ->setParameter('id', $id)
+            ->getQuery()
+            ->getOneOrNullResult();
     }
 
 //    /**

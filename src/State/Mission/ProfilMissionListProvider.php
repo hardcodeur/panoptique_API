@@ -4,15 +4,17 @@ namespace App\State\Mission;
 
 use ApiPlatform\Metadata\Operation;
 use ApiPlatform\State\ProviderInterface;
+use Symfony\Component\HttpKernel\Exception\UnauthorizedHttpException;
+use Symfony\Bundle\SecurityBundle\Security;
 
 use App\Dto\Mission\MissionListDto;
 use App\Repository\MissionRepository;
-use Symfony\Component\Serializer\Annotation\Ignore;
 
-class MissionListProvider implements ProviderInterface
+class ProfilMissionListProvider implements ProviderInterface
 {   
     public function __construct(
-        private MissionRepository $missionRepository
+        private MissionRepository $missionRepository,
+        private Security $security
     ) {
     }
 
@@ -36,7 +38,16 @@ class MissionListProvider implements ProviderInterface
 
     public function provide(Operation $operation, array $uriVariables = [], array $context = []): object|array|null
     {
-        $missions = $this->missionRepository->findCurrentAndFutureMissions();
+        /** @var \App\Entity\AuthUser|null $authUser */
+        $authUser = $this->security->getUser();
+
+        if (!$authUser) {
+            throw new UnauthorizedHttpException('Bearer', 'User not authenticated.');
+        }
+
+        $user = $authUser->getUser();
+        
+        $missions = $this->missionRepository->findCurrentAndFutureMissionsByUserId($user->getId());
 
         return array_map(function ($mission) {
             

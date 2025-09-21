@@ -16,6 +16,19 @@ class LocationRepository extends ServiceEntityRepository
         parent::__construct($registry, Location::class);
     }
 
+    public function findLocationsWithNotesByUser(int $userId): array
+    {
+        return $this->createQueryBuilder('location')
+            ->leftJoin('location.locationNotes', 'note')
+            ->addSelect('note')
+            ->innerJoin('location.team', 'team')
+            ->innerJoin('team.users', 'user')
+            ->andWhere('user.id = :userId')
+            ->setParameter('userId', $userId)
+            ->getQuery()
+            ->getResult();
+    }
+
     public function findLocationsWithNotes(): array
     {
         return $this->createQueryBuilder('location')

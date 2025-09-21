@@ -9,7 +9,7 @@ use ApiPlatform\Metadata\ApiProperty;
  */
 class MissionShiftsDto
 {   
-    public ?\IntlDateFormatter $dateFormatter = null;
+    private ?\IntlDateFormatter $dateFormatter = null;
     private const FULL_FORMAT = "d/m/Y H:i";
 
     private function getDateFormatter(): \IntlDateFormatter

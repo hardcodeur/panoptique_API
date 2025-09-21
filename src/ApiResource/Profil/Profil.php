@@ -1,5 +1,5 @@
 <?php 
-namespace App\ApiResource\Notification;
+namespace App\ApiResource\Profil;
 
 use ApiPlatform\Metadata;
 use ApiPlatform\Metadata\ApiResource;
@@ -11,6 +11,10 @@ use App\Dto\UserShifts\UseShiftMetricOutputDto;
 use App\State\Profil\ProfilDetailProvider;
 use App\State\UserShifts\UseShiftMetricProvider;
 use App\State\UserShifts\UserShiftsProvider;
+
+use App\Dto\Mission\MissionListDto;
+use App\State\Mission\ProfilMissionListProvider;
+
 
 
 
@@ -34,6 +38,12 @@ use App\State\UserShifts\UserShiftsProvider;
             output: UseShiftMetricOutputDto::class,
             provider: UseShiftMetricProvider::class,
             name: 'profil_current_month_shifts_metric'
+        ),
+        new Metadata\GetCollection(
+            uriTemplate: '/profil/missions',
+            output: MissionListDto::class,
+            provider: ProfilMissionListProvider::class,
+            name: 'profil_missions'
         )
     ]
 )]

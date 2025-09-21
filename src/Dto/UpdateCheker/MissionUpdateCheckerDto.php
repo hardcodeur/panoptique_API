@@ -3,6 +3,7 @@
 namespace App\Dto\UpdateCheker;
 
 use ApiPlatform\Metadata\ApiProperty;
+use App\Dto\UpdateCheker\MissionShiftUpdateCheckerDto;
 
 class MissionUpdateCheckerDto
 {
@@ -11,6 +12,7 @@ class MissionUpdateCheckerDto
         private ?int $id = null,
         private ?\DateTimeImmutable $start = null,
         private ?\DateTimeImmutable $end = null,
+        private array $shifts = [],
     ) {
     }
 
@@ -24,6 +26,14 @@ class MissionUpdateCheckerDto
     public function getEnd(): ?string
     {
         return $this->end->format(self::DATE_FORMAT);
+    }
+
+    /**
+     * @return MissionShiftUpdateCheckerDto[]
+    */
+    public function getShifts(): array
+    {
+        return $this->shifts;
     }
 
 }

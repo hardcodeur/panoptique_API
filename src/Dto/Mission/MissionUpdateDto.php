@@ -2,8 +2,8 @@
 
 namespace App\Dto\Mission;
 
-use ApiPlatform\Metadata\ApiProperty;
 use Symfony\Component\Validator\Constraints as Assert;
+use App\Dto\Shift\ShiftUpdateDto;
 
 /**
  * DTO for updating a Mission via API
@@ -11,22 +11,20 @@ use Symfony\Component\Validator\Constraints as Assert;
 class MissionUpdateDto
 {
     public function __construct(
-        #[ApiProperty(identifier: true)]
-        private ?int $id = null,
 
         #[Assert\Type(type: "\DateTimeImmutable", message: "Le format de la date est invalide")]
         private ?\DateTimeImmutable $start = null,
 
         #[Assert\Type(type: "\DateTimeImmutable", message: "Le format de la date est invalide")]
         #[Assert\GreaterThan(propertyPath: "start", message: "La date de fin doit être supérieure à la date de début")]
-        private ?\DateTimeImmutable $end = null
+        private ?\DateTimeImmutable $end = null,
+
+        /** @var ShiftUpdateDto[] */
+        #[Assert\Valid]
+        private array $shifts = [],
     ) {
     }
 
-    public function getId(): ?int
-    {
-        return $this->id;
-    }
 
     public function getStart(): ?\DateTimeImmutable
     {
@@ -47,6 +45,23 @@ class MissionUpdateDto
     public function setEnd(?\DateTimeImmutable $end): self
     {
         $this->end = $end;
+        return $this;
+    }
+
+    /**
+     * @return ShiftUpdateDto[]
+    */
+    public function getShifts(): array
+    {
+        return $this->shifts;
+    }
+
+    /**
+     * @param ShiftUpdateDto[]
+     */
+    public function setShifts(array $shifts): self
+    {
+        $this->shifts = $shifts;
         return $this;
     }
 }

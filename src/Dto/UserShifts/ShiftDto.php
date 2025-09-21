@@ -4,14 +4,36 @@ namespace App\Dto\UserShifts;
 
 final class ShiftDto
 {   
-    public ?\IntlDateFormatter $dateFormatter = null;
+    private ?\IntlDateFormatter $dateFormatter = null;
 
     public function __construct(
+        public int $id,
         public \DateTimeImmutable $shiftStart,
         public \DateTimeImmutable $shiftEnd,
         public string $activity,
         public string $missionId,
     ) {
+    }
+
+    public function getId(): ?int
+    {
+        return $this->id;
+    }
+    
+    private function getDateFormatter(): \IntlDateFormatter
+    {
+        if ($this->dateFormatter === null) {
+            $this->dateFormatter = new \IntlDateFormatter(
+                'fr_FR', 
+                \IntlDateFormatter::FULL, 
+                \IntlDateFormatter::NONE,
+                'Europe/Paris',
+                \IntlDateFormatter::GREGORIAN,
+                'EEEE d MMMM' // format "lundi 6 mai"
+            );
+        }
+        
+        return $this->dateFormatter;
     }
 
     public function getShiftStartDateFormat(): ?string
@@ -32,19 +54,4 @@ final class ShiftDto
         return $date;
     }
     
-    private function getDateFormatter(): \IntlDateFormatter
-    {
-        if ($this->dateFormatter === null) {
-            $this->dateFormatter = new \IntlDateFormatter(
-                'fr_FR', 
-                \IntlDateFormatter::FULL, 
-                \IntlDateFormatter::NONE,
-                'Europe/Paris',
-                \IntlDateFormatter::GREGORIAN,
-                'EEEE d MMMM' // format "lundi 6 mai"
-            );
-        }
-        
-        return $this->dateFormatter;
-    }
 }

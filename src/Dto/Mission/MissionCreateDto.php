@@ -3,6 +3,7 @@
 namespace App\Dto\Mission;
 
 use Symfony\Component\Validator\Constraints as Assert;
+use App\Dto\Shift\ShiftCreateDto;
 
 /**
  * DTO for creating a new Mission via API
@@ -23,7 +24,11 @@ class MissionCreateDto
         private ?string $customer = null,
 
         #[Assert\NotBlank(message: "L'équipe est obligatoire")]
-        private ?string $team = null
+        private ?string $team = null,
+
+        /** @var ShiftCreateDto[] */
+        #[Assert\Valid]
+        private array $shifts = [],
     ) {
     }
 
@@ -68,6 +73,23 @@ class MissionCreateDto
     public function setTeam(?string $team): self
     {
         $this->team = $team;
+        return $this;
+    }
+
+    /**
+     * @return ShiftCreateDto[]
+     */
+    public function getShifts(): array
+    {
+        return $this->shifts;
+    }
+
+    /**
+     * @param ShiftCreateDto[] $locationNote
+     */
+    public function setShifts(array $shifts): self
+    {
+        $this->shifts = $shifts;
         return $this;
     }
 }

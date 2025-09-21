@@ -37,11 +37,7 @@ class Shift
     #[ORM\JoinColumn(nullable: false)]
     private ?Mission $mission = null;
 
-    private const ACTIVITY = [
-        "co"=>"connexion",
-        "surv"=>"surveillance",
-        "deco"=>"deconnexion",
-    ];
+    private const ACTIVITY = ["connexion","surveillance","deconnexion"];
 
     public function getId(): ?int
     {
@@ -82,11 +78,11 @@ class Shift
 
         $activity = strtolower($activity);
 
-        if(!array_key_exists($activity,self::ACTIVITY) ){
-            throw new \InvalidArgumentException(sprintf('Rôle "%s" invalide',$activity));
+        if(!in_array($activity,self::ACTIVITY) ){
+            throw new \InvalidArgumentException(sprintf('Shift type "%s" invalide',$activity));
         }
         
-        $this->activity = self::ACTIVITY[$activity];
+        $this->activity = $activity;
 
         return $this;
     }

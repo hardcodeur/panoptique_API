@@ -19,6 +19,7 @@ final class SendRegisterNewUserMessageHandler
     {
         try {
             $this->authUserEmail->registreNewUser($data->getUserEmail(),$data->getGeneratedPassword());
+            sleep(2);
         } catch (\Exception $e) {
             $this->logger->error(
                 "Échec de l'envoi de l'email via le handler SendRegisterNewUserMessageHandler",

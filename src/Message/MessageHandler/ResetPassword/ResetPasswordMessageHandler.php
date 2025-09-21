@@ -20,6 +20,7 @@ final class ResetPasswordMessageHandler
     {
         try {
             $this->authUserEmail->resetPassword($message->getEmail(), $message->getNewPassword());
+            sleep(2);
         } catch (\Exception $e) {
             $this->logger->error(
                 "Échec de l'envoi de l'email de réinitialisation via ResetPasswordMessageHandler",

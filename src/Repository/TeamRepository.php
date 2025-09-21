@@ -3,6 +3,7 @@
 namespace App\Repository;
 
 use App\Entity\Team;
+use App\Entity\User;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
@@ -36,6 +37,7 @@ class TeamRepository extends ServiceEntityRepository
             ->getQuery()
             ->getResult();
     }
+
 
 //    /**
 //     * @return Team[] Returns an array of Team objects

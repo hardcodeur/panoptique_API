@@ -6,7 +6,6 @@ use ApiPlatform\Metadata\Operation;
 use ApiPlatform\State\ProcessorInterface;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
-use ApiPlatform\Validator\Exception\ValidationException;
 use ApiPlatform\Metadata\Delete;
 # Dt0
 use App\Dto\User\UserCreateDto;
@@ -16,6 +15,7 @@ use App\Dto\User\UserDetailUpdateDto;
 # Entity
 use App\Entity\User;
 use App\Entity\AuthUser;
+use App\Entity\Notification;
 # Repository
 use App\Repository\TeamRepository;
 use App\Repository\AuthUserRepository;
@@ -66,7 +66,7 @@ class UserProcessor implements ProcessorInterface
         $teamId=$data->getTeam();
         $team = $this->teamRepository->find($teamId);
         if(!$team){
-            throw new NotFoundHttpException("L'équipe avec l'ID ".$$data->getTeam()." n'existe pas");
+            throw new NotFoundHttpException("L'équipe avec l'ID ".$data->getTeam()." n'existe pas");
         }
         // user table
         $user = new User();
@@ -87,12 +87,18 @@ class UserProcessor implements ProcessorInterface
 
         $user->setAuthUser($authUser);
 
+        $notificationUser = new Notification();
+        $notificationUser->setText("Bonjour ".$user->getFirstName()." ".$user->getLastName()." Bienvenue dans l'équipe ".$team->getName()." !");
+        $notificationUser->setUser($user);
 
         $this->entityManager->persist($user);
+        $this->entityManager->persist($notificationUser);
         $this->entityManager->flush();
 
         // asynchrone send Email
         $this->messageBus->dispatch(new RegisterNewUserData($data->getEmail(), $randPass));
+
+        
 
         // return new user
         return new UserDetailDto(
@@ -150,11 +156,16 @@ class UserProcessor implements ProcessorInterface
             $teamId=$data->getTeam();
             $team = $this->teamRepository->find($teamId);
             if(!$team){
-                throw new NotFoundHttpException("L'équipe avec l'ID ".$$data->getTeam()." n'existe pas");
+                throw new NotFoundHttpException("L'équipe avec l'ID " . $data->getTeam() . " n'existe pas");
             }
             $user->setTeam($team);
         }
+
+        $notificationUser = new Notification();
+        $notificationUser->setText("Votre profil à était mis à jour");
+        $notificationUser->setUser($user);
         
+        $this->entityManager->persist($notificationUser);
         $this->entityManager->flush();
 
         // return new user
@@ -180,6 +191,11 @@ class UserProcessor implements ProcessorInterface
         }
 
         $user->setIsDeleted(true);
+
+        $teamManager= $this->teamRepository->findTeamManager($user->getTeam()->getId());
+        $notificationTeamManger = new Notification();
+        $notificationTeamManger->setText($user->getFirstName()." ".$user->getLastName()." ne fait plus partie de l'équipe.");
+        $notificationTeamManger->setUser($teamManager);
 
         $this->entityManager->flush();
 

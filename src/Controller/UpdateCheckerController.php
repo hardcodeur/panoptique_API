@@ -26,7 +26,7 @@ final class UpdateCheckerController extends AbstractController
         private TeamRepository $teamRepository,
         private MissionRepository $missionRepository,
         private LocationRepository $locationRepository,
-        private SerializerInterface $serializer
+        private SerializerInterface $serializer,
     ) {
     }
 
@@ -81,22 +81,62 @@ final class UpdateCheckerController extends AbstractController
     public function updateCheckerMission(int $id): JsonResponse
     {
 
-        $item = $this->missionRepository->find($id);
+        $item = $this->missionRepository->findMissionWithShiftById($id);
 
         if (!$item) {
             return new JsonResponse(['message' => 'Mission not found'], JsonResponse::HTTP_NOT_FOUND);
         }
 
-        $dto = new MissionUpdateCheckerDto(
-            $item->getId(),
-            $item->getStart(),
-            $item->getEnd(),
-        );
+            $shiftsByActivityAndTime = [
+                'connexion' => [],
+                'surveillance' => [],
+                'deconnexion' => []
+            ];
+            
+            // regrouper les shifts par activité et créneau horaire
+            foreach ($item->getShifts() as $shift) {
+                $user = $shift->getUser();
+                $authUser = $user->getAuthUser();
+                $role= $authUser->getRoles();
+                
+                $timeKey = $shift->getStart()->format('U').'-'.$shift->getEnd()->format('U');
+                $activity = $shift->getActivity();
+                $date = $shift->getStart()->setTimezone(new \DateTimeZone('Europe/Paris'));
+                
+                if (!isset($shiftsByActivityAndTime[$activity][$timeKey])) {
+                    $shiftsByActivityAndTime[$activity][$timeKey] = [
+                        'id'=>$shift->getId(),
+                        'start' => $shift->getStart(),
+                        'end' => $shift->getEnd(),
+                        'activity' => $shift->getActivity(),
+                        'users' => []
+                    ];
+                }
+                
+                $shiftsByActivityAndTime[$activity][$timeKey]['users'][] = $user->getId();
+            }
+            
+            // Deuxième passage : réorganiser dans la structure finale
+            $shiftsDto = [];
+            
+            foreach ($shiftsByActivityAndTime as $activity => $timeSlots) {
+                foreach ($timeSlots as $timeSlot) {
+                    $shiftsDto[] = $timeSlot;
+                }
+            }
+            
+            $dto = new MissionUpdateCheckerDto(
+                $item->getId(),
+                $item->getStart(),
+                $item->getEnd(),
+                $shiftsDto
+            );
 
         // Serialize the DTO to JSON
         $json = $this->serializer->serialize($dto, 'json');
 
         return new JsonResponse($json, JsonResponse::HTTP_OK, [], true);
+
     }
 
     #[Route('api/update/checker/location/{id}', name: 'api_update_checker_location',methods:["GET"])]

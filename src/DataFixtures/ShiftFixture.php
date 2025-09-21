@@ -46,7 +46,7 @@ class ShiftFixture extends Fixture implements DependentFixtureInterface
                 array_slice($teamUsers, 0, 2),
                 $connexionStart,
                 $connexionEnd,
-                'co'
+                'connexion'
             );
 
             // 2. Répartir les shifts de surveillance sur la durée de la mission
@@ -76,7 +76,7 @@ class ShiftFixture extends Fixture implements DependentFixtureInterface
                     $user,
                     clone $currentTime,
                     clone $shiftEnd,
-                    'surv'
+                    'surveillance'
                 );
 
                 $lastSurvUser = $user;
@@ -93,7 +93,7 @@ class ShiftFixture extends Fixture implements DependentFixtureInterface
                 $decoUsers,
                 $decoStart,
                 clone $missionEnd,
-                'deco'
+                'deconnexion'
             );
         }
 

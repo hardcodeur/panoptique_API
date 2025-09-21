@@ -34,6 +34,7 @@ class UserShiftsProvider implements ProviderInterface
 
         $shiftDtos = array_map(
             fn ($shift) => new ShiftDto(
+                 $shift->getId(),
                 $shift->getStart(),
                 $shift->getEnd(),
                 $shift->getActivity(),

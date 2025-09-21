@@ -1,22 +1,26 @@
 framework:
     messenger:
-        # Uncomment this (and the failed transport below) to send failed messages to this transport for later handling.
-        # failure_transport: failed
+        failure_transport: failed
 
         transports:
-            # https://symfony.com/doc/current/messenger.html#transport-configuration
-            # async: '%env(MESSENGER_TRANSPORT_DSN)%'
-            # failed: 'doctrine://default?queue_name=failed'
-            # sync: 'sync://'
+            # Canal asynchrone qui utilise la base de données pour le développement
+            async: 'doctrine://default'
+            # Canal pour les messages qui ont échoué
+            failed: 'doctrine://default?queue_name=failed'
 
         routing:
-            # Route your messages to the transports
-            # 'App\Message\YourMessage': async
+            # On route nos classes de message vers le canal asynchrone
+            'App\Message\MessageHandler\RegisterNewMission\RegisterNewMissionData': async
+            'App\Message\MessageHandler\RegisterNewMissionWithShift\RegisterNewMissionWithShiftData': async
+            'App\Message\MessageHandler\RegisterDeleteMission\RegisterDeleteMissionData': async
+            'App\Message\MessageHandler\RegisterUpdateMissionWithShift\RegisterUpdateMissionWithShiftData': async
+            'App\Message\MessageHandler\RegisterNewUser\RegisterNewUserData': async
 
-# when@test:
-#    framework:
-#        messenger:
-#            transports:
-#                # replace with your transport name here (e.g., my_transport: 'in-memory://')
-#                # For more Messenger testing tools, see https://github.com/zenstruck/messenger-test
-#                async: 'in-memory://'
+# Configuration spécifique pour l'environnement de test
+when@test:
+    framework:
+        messenger:
+            transports:
+                # En test, les messages sont stockés en mémoire et non envoyés.
+                # Cela permet de vérifier qu'ils ont bien été émis.
+                async: 'in-memory://'

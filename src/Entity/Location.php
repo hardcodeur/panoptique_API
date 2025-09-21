@@ -10,10 +10,12 @@ use Doctrine\ORM\Mapping as ORM;
 
 use App\Dto\Location\LocationListDto;
 use App\State\Location\LocationProvider;
+use App\State\Location\LocationTeamListProvider; 
 use App\Dto\Location\LocationCreateDto;
 use App\State\Location\LocationProcessor;
 use App\Dto\Location\LocationDetailDto;
 use App\Dto\Location\LocationUpdateDto;
+
 
 #[ApiResource(
     operations: [

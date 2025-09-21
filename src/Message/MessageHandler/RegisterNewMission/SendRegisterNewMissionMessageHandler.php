@@ -18,7 +18,8 @@ final class SendRegisterNewMissionMessageHandler
     public function __invoke(RegisterNewMissionData $data): void
     {
         try {
-            $this->email->registreNewMission($data->getUserEmail(),$data->getMission());
+             $this->email->registreNewMission($data->getUserEmail(),$data->getMission());
+             sleep(2);
         } catch (\Exception $e) {
             $this->logger->error(
                 "Échec de l'envoi de l'email via le handler SendRegisterNewMissionMessageHandler",

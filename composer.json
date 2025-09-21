@@ -7,6 +7,7 @@
         "php": ">=8.1",
         "ext-ctype": "*",
         "ext-iconv": "*",
+        "api-platform/core": "^4.0.22",
         "api-platform/doctrine-orm": "^4.1",
         "api-platform/symfony": "^4.1",
         "doctrine/annotations": "^2.0",
@@ -22,6 +23,7 @@
         "phpstan/phpdoc-parser": "^2.1",
         "symfony/asset": "6.4.*",
         "symfony/console": "6.4.*",
+        "symfony/doctrine-messenger": "6.4.*",
         "symfony/dotenv": "6.4.*",
         "symfony/expression-language": "6.4.*",
         "symfony/flex": "^2",
@@ -38,8 +40,7 @@
         "symfony/serializer": "6.4.*",
         "symfony/twig-bundle": "6.4.*",
         "symfony/validator": "6.4.*",
-        "symfony/yaml": "6.4.*",
-        "api-platform/core": "^4.0.22"
+        "symfony/yaml": "6.4.*"
     },
     "config": {
         "allow-plugins": {
@@ -78,7 +79,10 @@
         ],
         "post-update-cmd": [
             "@auto-scripts"
-        ]
+        ],
+        "server:start": "symfony server:start",
+        "server:log": "symfony server:log",
+        "server:stop": "symfony server:stop"
     },
     "conflict": {
         "symfony/symfony": "*"

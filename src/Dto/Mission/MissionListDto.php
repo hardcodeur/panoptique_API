@@ -3,6 +3,7 @@
 namespace App\Dto\Mission;
 
 use ApiPlatform\Metadata\ApiProperty;
+use App\Dto\Shift\ShiftDetailDto;
 
 /**
  * DTO for detailed Mission representation in API responses
@@ -43,6 +44,7 @@ class MissionListDto
         private ?string $address = null,
         private ?int $teamId = null,
         private ?string $team = null,
+        public array $shifts = [],
     ) {
     }
 
@@ -129,6 +131,14 @@ class MissionListDto
     public function getTeam(): ?string
     {
         return $this->team;
+    }
+
+    /**
+    * @return ShiftDetailDto
+    */
+    public function getShifts(): array
+    {
+        return $this->shifts;
     }
 }
 
