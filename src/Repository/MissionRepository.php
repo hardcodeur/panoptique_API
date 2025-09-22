@@ -68,6 +68,31 @@ class MissionRepository extends ServiceEntityRepository
             ->getResult();
     }
 
+    public function findCurrentAndFutureMissionsTeamByTeamId(int $teamId): array
+    {
+        $todayStart = new \DateTimeImmutable('today');
+
+        return $this->createQueryBuilder('m')
+            ->leftJoin('m.shifts', 'all_shifts')
+            ->addSelect('all_shifts')
+            ->leftJoin('all_shifts.user', 'u')
+            ->addSelect('u')
+            ->leftJoin('m.customer', 'c')
+            ->addSelect('c')
+            ->leftJoin('c.location', 'l')
+            ->addSelect('l')
+            ->leftJoin('m.team', 't')
+            ->addSelect('t')
+            ->where('m.end >= :today')
+            ->andWhere('m.team = :teamId')
+            ->setParameter('today', $todayStart)
+            ->setParameter('teamId', $teamId)
+            ->orderBy('m.start', 'ASC')
+            ->addOrderBy('all_shifts.start', 'ASC')
+            ->getQuery()
+            ->getResult();
+    }
+
     public function findPastMissions(): array
     {
         $todayStart = new \DateTimeImmutable('today');

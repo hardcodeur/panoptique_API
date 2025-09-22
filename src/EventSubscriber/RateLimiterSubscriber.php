@@ -31,25 +31,22 @@ class RateLimiterSubscriber implements EventSubscriberInterface
         $path = $request->getPathInfo();
         $limiter = null;
 
-        // Appliquer les limiteurs les plus spécifiques en premier
         switch ($path) {
             case '/api/login':
                 $limiter = $this->loginLimiter->create($request->getClientIp());
                 break;
-            // case '/api/token/refresh':
-            //     $limiter = $this->refreshLimiter->create($request->getClientIp());
-            //     break;
-            // case '/api/reset/password':
-            //     $limiter = $this->passwordResetLimiter->create($request->getClientIp());
-            //     break;
+            case '/api/token/refresh':
+                $limiter = $this->refreshLimiter->create($request->getClientIp());
+                break;
+            case '/api/reset/password':
+                $limiter = $this->passwordResetLimiter->create($request->getClientIp());
+                break;
         }
 
-        // Si aucun limiteur spécifique n'a été trouvé, vérifier s'il s'agit d'une route API générale
         if ($limiter === null && str_starts_with($path, '/api/')) {
             $limiter = $this->apiLimiter->create($request->getClientIp());
         }
 
-        // Si un limiteur a été appliqué, le consommer
         if ($limiter !== null) {
             try {
                 $limiter->consume()->ensureAccepted();
