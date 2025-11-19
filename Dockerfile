@@ -53,8 +53,9 @@ RUN a2enmod rewrite && \
     a2dissite 000-default.conf && \
     echo "ServerName localhost" >> /etc/apache2/apache2.conf
 
-# Configure Apache for Symfony
-RUN sed -i 's/DocumentRoot \/var\/www\/html/DocumentRoot \/var\/www\/html\/public/' /etc/apache2/sites-available/000-default.conf
+# Configure Apache for Symfony and port 8000
+RUN sed -i 's/DocumentRoot \/var\/www\/html/DocumentRoot \/var\/www\/html\/public/' /etc/apache2/sites-available/000-default.conf && \
+    sed -i 's/Listen 80/Listen 8000/' /etc/apache2/ports.conf
 
 # Expose port
 EXPOSE 8000
