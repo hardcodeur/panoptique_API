@@ -55,7 +55,9 @@ RUN a2enmod rewrite && \
 # Configure Apache for Symfony and port 8000
 RUN sed -i 's/DocumentRoot \/var\/www\/html/DocumentRoot \/var\/www\/html\/public/' /etc/apache2/sites-available/000-default.conf && \
     sed -i 's/Listen 80/Listen 8000/' /etc/apache2/ports.conf && \
-    sed -i 's/<VirtualHost \*:80>/<VirtualHost *:8000>/' /etc/apache2/sites-available/000-default.conf
+    sed -i 's/<VirtualHost \*:80>/<VirtualHost *:8000>/' /etc/apache2/sites-available/000-default.conf && \
+    sed -i 's/<Directory \/var\/www\/html>/<Directory \/var\/www\/html\/public>/' /etc/apache2/sites-available/000-default.conf && \
+    sed -i 's/AllowOverride None/AllowOverride All/' /etc/apache2/sites-available/000-default.conf
 
 # Expose port
 EXPOSE 8000
