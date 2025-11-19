@@ -1,0 +1,59 @@
+[33m2ee8052[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32mmain[m[33m, [m[1;31morigin/main[m[33m)[m commit las bug
+[33m1eefdee[m commit las bug
+[33mffca2b3[m commit rush de fin
+[33m04481c1[m add profil endpoints
+[33m0418ad1[m update token end rate limiter policy
+[33m5a0380d[m add notifivation table and routes
+[33m4bac849[m add update Cheker and profil routes
+[33m09d255f[m Email new mission
+[33m11d3d14[m Crud mission
+[33m89f8fa6[m update dto team entity
+[33m4af85ff[m add CRUD team
+[33m1986084[m add reset password endpoint
+[33ma0379ab[m final config  update user route
+[33m0882848[m update user intergration
+[33m7d6cbb3[m maj update user
+[33m3f9f463[m update create user
+[33m6b12dcf[m add mailer
+[33me6d4709[m update create user
+[33m9fdb25d[m add custom payload and test
+[33m772affa[m refactoring and test rate limiter
+[33maec6c22[m test env and authentification test
+[33md4560be[m update config logger
+[33meb285cb[m update logger in event suscriber
+[33ma2090ed[m add logger in event suscriber
+[33m9a178d5[m UC-1: rate limiter
+[33m7614744[m UC-01 : add logout
+[33mf9add1b[m UC-01 : refresh token
+[33mc015b95[m add refresh token
+[33mb461019[m update Auth login add EventSubscriber
+[33m6426a82[m fixtures update
+[33m3ed4821[m new user endpoint shift user metric and next shift in current week
+[33m6c8b5e5[m udpade fixtures data
+[33mb206964[m udpade provider new data shema and fixtures data
+[33m6d821a5[m udpade provider new data shema and fixtures data
+[33ma949ed0[m udpade provider new data shema
+[33m949f57c[m add new query for get mission whit shift actual and update provider for group shift by activity
+[33mac7bffb[m add new query for get mission by today date in futur and in past
+[33m1ce9668[m enpoint location
+[33m7e66325[m create shiftFixtures and update userAuth fixtures
+[33me31003d[m creat new endpoint missions shifts
+[33m109bc81[m update missionList DTO date and hour format
+[33m2626ab2[m update missionList DTO
+[33m88f87c2[m new endpoint get missions
+[33ma214b02[m update data return by subscriber
+[33meec0720[m udpate data /users/{id} root
+[33med1ff23[m event login listenner
+[33m652b47f[m new endpoint profil
+[33m12f4c24[m new endpoint TeamUnassignedUsers
+[33m5fd6b08[m response return type json
+[33m892dd52[m endpoint get all teams white users
+[33m2db0bc3[m new team endpoint
+[33m008ed24[m fixtures
+[33mef51f66[m integration all entity and some fixtures
+[33m3a2a110[m new end point verify token
+[33maf46144[m[33m ([m[1;31morigin/dev_user[m[33m)[m auth
+[33m2652786[m update post and put users response manager
+[33mae8578e[m add route put,delete and post whith dto and state
+[33m0bd5f6a[m Create route for user and userlist white dto and state
+[33m9b69439[m Add initial set of files

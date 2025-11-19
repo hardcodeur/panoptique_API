@@ -15,7 +15,6 @@ use App\State\Notification\NewNotificationCountProvider;
             name: 'get_new_notification_count'
         )
     ],
-    read: true,
     paginationEnabled: false,
 )]
 class NewNotificationCountDto

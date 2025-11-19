@@ -87,13 +87,13 @@ final class PasswordController extends AbstractController
         $hashedPassword = $this->passwordHasher->hashPassword($item->getAuthUser(), $dto->getNewPass());
         $item->getAuthUser()->setPassword($hashedPassword);
 
-        // // Delete all refresh tokens
-        // $refreshTokens = $this->entityManager->getRepository(RefreshToken::class)->findBy(['username' => $item->getAuthUser()->getEmail()]);
-        // if($refreshTokens){
-        //     foreach($refreshTokens as $refreshToken){
-        //         $this->entityManager->remove($refreshToken);
-        //     }
-        // }
+        // Delete all refresh tokens
+        $refreshTokens = $this->entityManager->getRepository(RefreshToken::class)->findBy(['username' => $item->getAuthUser()->getEmail()]);
+        if($refreshTokens){
+            foreach($refreshTokens as $refreshToken){
+                $this->entityManager->remove($refreshToken);
+            }
+        }
         
         $this->entityManager->flush();
 
