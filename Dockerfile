@@ -50,7 +50,6 @@ RUN chown -R www-data:www-data /var/www/html \
 
 # Enable Apache modules and configure
 RUN a2enmod rewrite && \
-    a2dissite 000-default.conf && \
     echo "ServerName localhost" >> /etc/apache2/apache2.conf
 
 # Configure Apache for Symfony and port 8000
